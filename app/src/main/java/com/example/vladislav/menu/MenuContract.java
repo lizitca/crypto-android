@@ -13,7 +13,7 @@ public interface MenuContract {
 
         void showAboutApp();
 
-        void showEmptyFragment();
+        void showNotImplementedToast();
     }
 
     interface Presenter extends BasePresenter {

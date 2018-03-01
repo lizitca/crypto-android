@@ -19,27 +19,27 @@ public class MenuPresenter implements MenuContract.Presenter {
 
     @Override
     public void onMainMenuSelected() {
-        mMenuView.showEmptyFragment();
+        mMenuView.showNotImplementedToast();
     }
 
     @Override
     public void onCryptoCurrenciesSelected() {
-        mMenuView.showEmptyFragment();
+        mMenuView.showNotImplementedToast();
     }
 
     @Override
     public void onMyCurrenciesSelected() {
-        mMenuView.showEmptyFragment();
+        mMenuView.showNotImplementedToast();
     }
 
     @Override
     public void onJournalSelected() {
-        mMenuView.showEmptyFragment();
+        mMenuView.showNotImplementedToast();
     }
 
     @Override
     public void onNoticeSelected() {
-        mMenuView.showEmptyFragment();
+        mMenuView.showNotImplementedToast();
     }
 
     @Override
@@ -49,6 +49,6 @@ public class MenuPresenter implements MenuContract.Presenter {
 
     @Override
     public void start() {
-
+        mMenuView.showAboutApp();
     }
 }

@@ -13,18 +13,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.vladislav.menu.R;
 import com.example.vladislav.menu.fragments.FragmentAboutApp;
-import com.example.vladislav.menu.fragments.FragmentEmpty;
 
 public class MenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, MenuContract.View {
 
     private MenuContract.Presenter mPresenter;
 
-    private CharSequence lastItemClickedTitle;
-
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
@@ -40,8 +39,14 @@ public class MenuActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
         new MenuPresenter(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mPresenter.start();
     }
 
     @Override
@@ -83,9 +88,6 @@ public class MenuActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        lastItemClickedTitle = item.getTitle();
-
-
         if (id == R.id.main_menu) {
             mPresenter.onMainMenuSelected();
         } else if (id == R.id.crypto_currencies) {
@@ -100,6 +102,9 @@ public class MenuActivity extends AppCompatActivity
             mPresenter.onAboutAppSelected();
         }
 
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
 
@@ -108,19 +113,11 @@ public class MenuActivity extends AppCompatActivity
         replaceFragment(new FragmentAboutApp());
 
         setTitle(getResources().getString(R.string.about_app));
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
     }
 
     @Override
-    public void showEmptyFragment() {
-        replaceFragment(new FragmentEmpty());
-
-        setTitle(lastItemClickedTitle);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+    public void showNotImplementedToast() {
+        Toast.makeText(this, R.string.item_not_implemented, Toast.LENGTH_SHORT).show();
     }
 
     @Override
