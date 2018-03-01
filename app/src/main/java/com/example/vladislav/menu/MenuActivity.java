@@ -1,6 +1,7 @@
 package com.example.vladislav.menu;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,10 +14,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MenuActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+import com.example.vladislav.menu.R;
+import com.example.vladislav.menu.fragments.FragmentAboutApp;
+import com.example.vladislav.menu.fragments.FragmentEmpty;
 
-    @Override
+public class MenuActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, MenuContract.View {
+
+    private MenuContract.Presenter mPresenter;
+
+    private CharSequence lastItemClickedTitle;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
@@ -31,6 +39,9 @@ public class MenuActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        new MenuPresenter(this);
     }
 
     @Override
@@ -69,34 +80,57 @@ public class MenuActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
-        Fragment fragment = null;
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        lastItemClickedTitle = item.getTitle();
+
+
         if (id == R.id.main_menu) {
-            // Handle the camera action
+            mPresenter.onMainMenuSelected();
         } else if (id == R.id.crypto_currencies) {
-
+            mPresenter.onCryptoCurrenciesSelected();
         } else if (id == R.id.my_currencies) {
-
+            mPresenter.onMyCurrenciesSelected();
         } else if (id == R.id.journal) {
-
+            mPresenter.onJournalSelected();
         } else if (id == R.id.notice) {
-
+            mPresenter.onNoticeSelected();
         } else if (id == R.id.about_app) {
-            fragment = new FragmentAboutApp();
+            mPresenter.onAboutAppSelected();
         }
 
-        if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.screen_area, fragment);
-            fragmentTransaction.commit();
-            setTitle(item.getTitle());
-        }
+        return true;
+    }
+
+    @Override
+    public void showAboutApp() {
+        replaceFragment(new FragmentAboutApp());
+
+        setTitle(getResources().getString(R.string.about_app));
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        return true;
+    }
+
+    @Override
+    public void showEmptyFragment() {
+        replaceFragment(new FragmentEmpty());
+
+        setTitle(lastItemClickedTitle);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void setPresenter(@NonNull MenuContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    private void replaceFragment(Fragment newFragment) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.screen_area, newFragment);
+        fragmentTransaction.commit();
     }
 }

@@ -1,4 +1,4 @@
-package com.example.vladislav.menu;
+package com.example.vladislav.menu.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,19 +7,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.vladislav.menu.R;
+
 /**
- * Created by vladislav on 24.02.2018.
+ * Created by d3m1d0v on 01.03.2018.
  */
 
-public class FragmentAboutApp extends Fragment {
+public class FragmentEmpty extends Fragment {
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_about_app, null);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        return inflater.inflate(R.layout.activity_empty, null);
     }
 }

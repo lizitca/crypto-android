@@ -7,27 +7,27 @@
         <item
             android:id="@+id/main_menu"
             android:icon="@drawable/ic_menu_main"
-            android:title="Главная" />
+            android:title="@string/main" />
         <item
             android:id="@+id/crypto_currencies"
             android:icon="@drawable/ic_menu_crypto_currencies"
-            android:title="Криптовалюты" />
+            android:title="@string/crypto_currencies" />
         <item
             android:id="@+id/my_currencies"
             android:icon="@drawable/ic_my_currencies"
-            android:title="Мои валюты" />
+            android:title="@string/my_currencies" />
         <item
             android:id="@+id/journal"
             android:icon="@drawable/ic_menu_journal"
-            android:title="Журнал" />
+            android:title="@string/journal" />
         <item
             android:id="@+id/notice"
             android:icon="@drawable/ic_menu_notice"
-            android:title="Уведомления" />
+            android:title="@string/notice" />
         <item
             android:id="@+id/about_app"
             android:icon="@drawable/ic_menu_about_app"
-            android:title="О приложении" />
+            android:title="@string/about_app" />
     </group>
 
 </menu>
