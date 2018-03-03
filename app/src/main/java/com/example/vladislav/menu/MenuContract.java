@@ -11,6 +11,8 @@ public interface MenuContract {
 
     interface View extends BaseView<Presenter> {
 
+        void showMainScreen();
+
         void showAboutApp();
 
         void showNotImplementedToast();

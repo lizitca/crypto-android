@@ -19,7 +19,7 @@ public class MenuPresenter implements MenuContract.Presenter {
 
     @Override
     public void onMainMenuSelected() {
-        mMenuView.showNotImplementedToast();
+        mMenuView.showMainScreen();
     }
 
     @Override
@@ -34,6 +34,6 @@ public class MenuPresenter implements MenuContract.Presenter {
 
     @Override
     public void start() {
-        mMenuView.showAboutApp();
+        mMenuView.showMainScreen();
     }
 }

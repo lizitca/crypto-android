@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/currency_item"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:layout_margin="5dp"
+    android:background="@color/currency_item_background">
+
+    <TextView
+        android:id="@+id/currency_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:paddingTop="7dp"
+        android:paddingLeft="10dp"
+        android:text="CryptoName"
+        android:textSize="@dimen/currency_item_text_size"
+        android:textColor="@color/currency_item_title"/>
+
+    <TextView
+        android:id="@+id/currency_value"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:paddingTop="7dp"
+        android:layout_marginRight="110dp"
+        android:text="1000P"
+        android:textSize="@dimen/currency_item_text_size"
+        android:textColor="@color/currency_item_value"/>
+
+    <TextView
+        android:id="@+id/currency_change"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:paddingTop="7dp"
+        android:paddingRight="10dp"
+        android:text="+0.00%"
+        android:textSize="@dimen/currency_item_text_size"/>
+
+</RelativeLayout>

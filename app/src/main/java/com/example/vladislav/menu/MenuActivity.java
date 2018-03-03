@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.vladislav.menu.R;
 import com.example.vladislav.menu.fragments.FragmentAboutApp;
+import com.example.vladislav.menu.fragments.mainscreen.MainMenuFragment;
 
 public class MenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, MenuContract.View {
@@ -39,14 +40,7 @@ public class MenuActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        new MenuPresenter(this);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        mPresenter.start();
+        new MenuPresenter(this).start();
     }
 
     @Override
@@ -100,6 +94,13 @@ public class MenuActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    @Override
+    public void showMainScreen() {
+        replaceFragment(new MainMenuFragment());
+
+        setTitle(getResources().getString(R.string.main));
     }
 
     @Override
