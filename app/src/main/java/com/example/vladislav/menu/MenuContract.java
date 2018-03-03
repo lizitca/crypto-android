@@ -20,13 +20,7 @@ public interface MenuContract {
 
         void onMainMenuSelected();
 
-        void onCryptoCurrenciesSelected();
-
-        void onMyCurrenciesSelected();
-
-        void onJournalSelected();
-
-        void onNoticeSelected();
+        void onSettingsSelected();
 
         void onAboutAppSelected();
     }

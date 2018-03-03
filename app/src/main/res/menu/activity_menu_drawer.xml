@@ -9,21 +9,9 @@
             android:icon="@drawable/ic_menu_main"
             android:title="@string/main" />
         <item
-            android:id="@+id/crypto_currencies"
-            android:icon="@drawable/ic_menu_crypto_currencies"
-            android:title="@string/crypto_currencies" />
-        <item
-            android:id="@+id/my_currencies"
-            android:icon="@drawable/ic_my_currencies"
-            android:title="@string/my_currencies" />
-        <item
-            android:id="@+id/journal"
-            android:icon="@drawable/ic_menu_journal"
-            android:title="@string/journal" />
-        <item
-            android:id="@+id/notice"
-            android:icon="@drawable/ic_menu_notice"
-            android:title="@string/notice" />
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_menu_settings"
+            android:title="@string/settings" />
         <item
             android:id="@+id/about_app"
             android:icon="@drawable/ic_menu_about_app"

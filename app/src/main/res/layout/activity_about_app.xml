@@ -35,14 +35,15 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="\nВерсия 0.0.1\n\nСимферополь, 2018 г."
+            android:layout_height="match_parent"
+            android:text="@string/textView_version"
             android:textSize="20dp"
             android:textColor="#fff"/>
 
         <ImageView
-            android:layout_width="143dp"
             android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_gravity="right"
             android:src="@drawable/logo" />
 
     </LinearLayout>

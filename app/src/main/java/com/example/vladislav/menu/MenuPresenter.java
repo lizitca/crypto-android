@@ -23,22 +23,7 @@ public class MenuPresenter implements MenuContract.Presenter {
     }
 
     @Override
-    public void onCryptoCurrenciesSelected() {
-        mMenuView.showNotImplementedToast();
-    }
-
-    @Override
-    public void onMyCurrenciesSelected() {
-        mMenuView.showNotImplementedToast();
-    }
-
-    @Override
-    public void onJournalSelected() {
-        mMenuView.showNotImplementedToast();
-    }
-
-    @Override
-    public void onNoticeSelected() {
+    public void onSettingsSelected() {
         mMenuView.showNotImplementedToast();
     }
 

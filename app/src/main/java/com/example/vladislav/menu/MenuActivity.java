@@ -90,14 +90,8 @@ public class MenuActivity extends AppCompatActivity
 
         if (id == R.id.main_menu) {
             mPresenter.onMainMenuSelected();
-        } else if (id == R.id.crypto_currencies) {
-            mPresenter.onCryptoCurrenciesSelected();
-        } else if (id == R.id.my_currencies) {
-            mPresenter.onMyCurrenciesSelected();
-        } else if (id == R.id.journal) {
-            mPresenter.onJournalSelected();
-        } else if (id == R.id.notice) {
-            mPresenter.onNoticeSelected();
+        } else if (id == R.id.settings) {
+            mPresenter.onSettingsSelected();
         } else if (id == R.id.about_app) {
             mPresenter.onAboutAppSelected();
         }

@@ -1,10 +1,7 @@
 <resources>
     <string name="app_name">Crypto</string>
     <string name="main">Главная</string>
-    <string name="crypto_currencies">Криптовалюты</string>
-    <string name="my_currencies">Мои валюты</string>
-    <string name="journal">Журнал</string>
-    <string name="notice">Уведомления</string>
+    <string name="settings">Настройки</string>
     <string name="about_app">О приложении</string>
 
 
@@ -15,5 +12,6 @@
     <string name="action_settings">Settings</string>
 
     <string name="textView_about_app">Приложение для отслеживания курса покупки и продажи криптовалют. Студенческий проект, выполненный студентами 4 курса направления \"Программная инженерия\" группы ПИ-41.</string>
+    <string name="textView_version">\nВерсия 0.0.1\n\nСимферополь, 2018 г.</string>
     <string name="item_not_implemented">Этот пункт ещё не реализован =(</string>
 </resources>
