@@ -29,11 +29,11 @@ public class MenuPresenter implements MenuContract.Presenter {
 
     @Override
     public void onAboutAppSelected() {
-        mMenuView.showAboutApp();
+        mMenuView.showMainScreen();
     }
 
     @Override
     public void start() {
-        mMenuView.showAboutApp();
+        mMenuView.showMainScreen();
     }
 }

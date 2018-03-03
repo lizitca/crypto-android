@@ -13,6 +13,8 @@ public interface MenuContract {
 
         void showAboutApp();
 
+        void showMainScreen();
+
         void showNotImplementedToast();
     }
 
