@@ -13,10 +13,10 @@ import com.example.vladislav.menu.R;
  * Created by vladislav on 24.02.2018.
  */
 
-public class FragmentMainScreen extends Fragment {
+public class FragmentAboutApp extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.main_screen, null);
+        return inflater.inflate(R.layout.activity_about_app, null);
     }
 }
