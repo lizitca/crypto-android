@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_margin="5dp"
-    android:background="@color/currency_item_background">
+    android:background="@drawable/krugliye_ugli">
 
     <TextView
         android:id="@+id/currency_title"
