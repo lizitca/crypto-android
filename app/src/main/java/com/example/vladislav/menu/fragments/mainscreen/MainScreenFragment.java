@@ -11,20 +11,28 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.vladislav.menu.MenuContract;
+import com.example.vladislav.data.CurrencyBaseInfo;
+import com.example.vladislav.data.TestCryptoRepository;
 import com.example.vladislav.menu.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by d3m1d0v on 03.03.2018.
  */
 
-public class MainMenuFragment extends Fragment {
+public class MainScreenFragment extends Fragment implements MainScreenContract.View {
 
+    private MainScreenContract.Presenter mPresenter;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        new MainScreenPresenter(this, TestCryptoRepository.getInstance());
+    }
 
     @Nullable
     @Override
@@ -35,30 +43,25 @@ public class MainMenuFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.main_screen);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mAdapter = new CryptoCurrencyAdapter(generateCurrencies());
-        mRecyclerView.setAdapter(mAdapter);
+        mPresenter.start();
 
         return view;
     }
 
-    private List<CryptoCurrencyData> generateCurrencies() {
-        List<CryptoCurrencyData> currencies = new ArrayList<>();
-        for (int i = 0; i < 25; i++) {
-            CryptoCurrencyData data = new CryptoCurrencyData();
-            data.value = "$" + (i * 333);
-            data.name = "Bitcoin " + i;
-            data.change = i%2 == 0 ? "+" : "-";
-            data.change += "2.22%";
-            data.change = i%10 == 0 ? "0.00%" : data.change;
-            currencies.add(data);
-        }
-        return currencies;
+    @Override
+    public void showAllCurrenciesInfoItems(List<CurrencyBaseInfo> currencies) {
+        mAdapter = new CryptoCurrencyAdapter(currencies);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
-    private class CryptoCurrencyData {
-        String name;
-        String value;
-        String change;
+    @Override
+    public void showInfoToast(String currencyName) {
+        Toast.makeText(this.getContext(), String.format("On %s clicked.", currencyName), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setPresenter(MainScreenContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 
     /**
@@ -67,7 +70,7 @@ public class MainMenuFragment extends Fragment {
     private class CryptoCurrencyHolder extends RecyclerView.ViewHolder
         implements View.OnClickListener {
 
-        private CryptoCurrencyData mCurrencyData;
+        private CurrencyBaseInfo mCurrencyInfo;
         private TextView mTitle;
         private TextView mValue;
         private TextView mChange;
@@ -84,21 +87,17 @@ public class MainMenuFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(
-                    MainMenuFragment.this.getContext(),
-                    "you clicked on " + mCurrencyData.name,
-                    Toast.LENGTH_SHORT)
-                    .show();
+            MainScreenFragment.this.mPresenter.onCurrencyItemClick(mCurrencyInfo.getName());
         }
 
-        public void setCurrencyData(CryptoCurrencyData currency) {
-            mCurrencyData = currency;
+        public void setCurrencyData(CurrencyBaseInfo info) {
+            mCurrencyInfo = info;
 
-            mTitle.setText(currency.name);
-            mValue.setText(currency.value);
-            mChange.setText(currency.change);
+            mTitle.setText(mCurrencyInfo.getName());
+            mValue.setText(mCurrencyInfo.getPriceValue());
+            mChange.setText(mCurrencyInfo.getChangeValue());
 
-            switch (currency.change.charAt(0)) {
+            switch (mCurrencyInfo.getChangeValue().charAt(0)) {
                 case '+':
                     mChange.setTextColor(getResources().getColor(R.color.currency_item_change_positiv));
                     break;
@@ -119,9 +118,9 @@ public class MainMenuFragment extends Fragment {
      */
     private class CryptoCurrencyAdapter extends RecyclerView.Adapter<CryptoCurrencyHolder> {
 
-        private List<CryptoCurrencyData> mCurrencies;
+        private List<CurrencyBaseInfo> mCurrencies;
 
-        public CryptoCurrencyAdapter(List<CryptoCurrencyData> mCurrencies) {
+        public CryptoCurrencyAdapter(List<CurrencyBaseInfo> mCurrencies) {
             this.mCurrencies = mCurrencies;
         }
 

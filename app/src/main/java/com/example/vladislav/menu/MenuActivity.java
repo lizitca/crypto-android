@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,9 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.vladislav.menu.R;
 import com.example.vladislav.menu.fragments.FragmentAboutApp;
-import com.example.vladislav.menu.fragments.mainscreen.MainMenuFragment;
+import com.example.vladislav.menu.fragments.mainscreen.MainScreenFragment;
 
 public class MenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, MenuContract.View {
@@ -98,7 +96,7 @@ public class MenuActivity extends AppCompatActivity
 
     @Override
     public void showMainScreen() {
-        replaceFragment(new MainMenuFragment());
+        replaceFragment(new MainScreenFragment());
 
         setTitle(getResources().getString(R.string.main));
     }

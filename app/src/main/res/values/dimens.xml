@@ -6,5 +6,6 @@
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="currency_item_text_size">27sp</dimen>
+    <dimen name="currency_item_text_size">23sp</dimen>
+    <dimen name="currency_item_name_text_size">27sp</dimen>
 </resources>
