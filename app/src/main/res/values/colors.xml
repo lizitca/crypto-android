@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#00796b</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="background">#b2dfdb</color>
+
+    <!-- Currency item colors -->
+    <color name="currency_item_background">#cdeae8</color>
+    <color name="currency_item_title">#00796b</color>
+    <color name="currency_item_value">#000000</color>
+    <color name="currency_item_change_positiv">#085a02</color>
+    <color name="currency_item_change_negative">#5a021d</color>
+    <color name="currency_item_change_non">#585c58</color>
+</resources>
