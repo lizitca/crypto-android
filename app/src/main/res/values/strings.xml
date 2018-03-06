@@ -12,6 +12,6 @@
     <string name="action_settings">Settings</string>
 
     <string name="textView_about_app">Приложение для отслеживания курса покупки и продажи криптовалют. Студенческий проект, выполненный студентами 4 курса направления \"Программная инженерия\" группы ПИ-41.</string>
-    <string name="textView_version">\nВерсия 0.0.1\n\nСимферополь, 2018 г.</string>
+    <string name="textView_version">\nВерсия 0.1.0-alpha\n\nСимферополь, 2018 г.</string>
     <string name="item_not_implemented">Этот пункт ещё не реализован =(</string>
 </resources>
