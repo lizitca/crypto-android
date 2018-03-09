@@ -1,5 +1,9 @@
 package com.example.vladislav.data;
 
+import android.util.Log;
+
+import com.example.vladislav.app.Constant;
+
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
@@ -9,6 +13,7 @@ import java.text.DecimalFormat;
 
 public class CurrencyBaseInfo {
 
+    //todo FORMAT ?
     private static final String FORMAT = "#.###";
     private static final DecimalFormat FORMATTER;
 
@@ -38,10 +43,20 @@ public class CurrencyBaseInfo {
     }
 
     public String getChangeValue() {
-        String value = FORMATTER.format(change);
-        value = Float.parseFloat(value) > 0 ? '+' + value : value;
-        value = value + '%';
+        // TODO: 09.03.2018 https://developer.android.com/reference/java/lang/StringBuilder.html
+        // TODO: 09.03.2018 https://developer.android.com/reference/java/util/Formatter.html
+        // Example
+        // Calendar c = new GregorianCalendar(1995, MAY, 23);
+        // String s = String.format("Duke's Birthday: %1$tb %1$te, %1$tY", c);
+        // -> s == "Duke's Birthday: May 23, 1995"
 
+        String value = FORMATTER.format(change);
+        try {
+            value = Float.parseFloat(value) > 0 ? '+' + value : value; // todo exception!!!
+        } catch (NumberFormatException e) {
+            Log.e(Constant.TAG, "getChangeValue: ", e);
+        }
+        value = value + '%';
         return value;
     }
 
