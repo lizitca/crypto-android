@@ -8,7 +8,7 @@ import com.example.vladislav.data.CryptoRepository;
  * Created by d3m1d0v on 04.03.2018.
  */
 
-public class MainScreenPresenter implements MainScreenContract.Presenter {
+public class MainScreenPresenter implements MainScreenContract.Presenter, CryptoRepository.RepoListener {
 
     private final MainScreenContract.View mView;
     private final CryptoRepository mRepository;
@@ -26,7 +26,21 @@ public class MainScreenPresenter implements MainScreenContract.Presenter {
     }
 
     @Override
+    public void onDestroy() {
+        mRepository.deleteListener(this);
+    }
+
+    @Override
     public void start() {
         mView.showAllCurrenciesInfoItems(mRepository.getAllCurrenciesInfo());
+        mRepository.addListener(this);
+    }
+
+    /**
+     * {@link CryptoRepository.RepoListener} implementation
+     */
+    @Override
+    public void update() {
+        mView.showUpdatedInfo();
     }
 }

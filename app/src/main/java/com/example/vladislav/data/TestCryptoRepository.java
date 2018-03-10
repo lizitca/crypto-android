@@ -79,4 +79,14 @@ public class TestCryptoRepository implements CryptoRepository {
         float generatedFloat = leftLimit + new Random().nextFloat() * (rightLimit - leftLimit);
         return generatedFloat;
     }
+
+    @Override
+    public void addListener(RepoListener listener) {
+        // TODO: implements addListener()
+    }
+
+    @Override
+    public void deleteListener(RepoListener listener) {
+        // TODO: implements deleteListener()
+    }
 }

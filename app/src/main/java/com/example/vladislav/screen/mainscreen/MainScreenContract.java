@@ -17,10 +17,14 @@ public interface MainScreenContract {
         void showAllCurrenciesInfoItems(List<CurrencyBaseInfo> currencies);
 
         void showInfoToast(String currencyName);
+
+        void showUpdatedInfo();
     }
 
     interface Presenter extends BasePresenter {
 
         void onCurrencyItemClick(String currencyName);
+
+        void onDestroy();
     }
 }

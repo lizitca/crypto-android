@@ -61,8 +61,19 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
     }
 
     @Override
+    public void showUpdatedInfo() {
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void setPresenter(MainScreenContract.Presenter presenter) {
         mPresenter = presenter;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mPresenter.onDestroy();
     }
 
     /**
