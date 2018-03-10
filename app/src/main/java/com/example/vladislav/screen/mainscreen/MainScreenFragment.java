@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vladislav.data.CurrencyBaseInfo;
+import com.example.vladislav.data.NetworkRepository;
 import com.example.vladislav.data.TestCryptoRepository;
 import com.example.vladislav.menu.R;
 
@@ -31,7 +32,7 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        new MainScreenPresenter(this, TestCryptoRepository.getInstance());
+        new MainScreenPresenter(this, NetworkRepository.getInstance());
     }
 
     @Nullable
