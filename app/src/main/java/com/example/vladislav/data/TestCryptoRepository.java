@@ -13,23 +13,27 @@ public class TestCryptoRepository implements CryptoRepository {
     private static TestCryptoRepository INSTANCE;
 
     private List<CurrencyBaseInfo> currencies;
-    private String[] currenciesName = {
-            "Bitcoin",
-            "Ethereum",
-            "Ripple",
-            "Bitcoin Cash",
-            "Litecoin",
-            "NEO",
-            "Cardano",
-            "Stellar",
+    public static final String[] currenciesName = {
+            "BTC",
+            "ETH",
+            "LTC",
+            "XRP",
+            "BCH",
+            "TRX",
+            "ETC",
             "EOS",
-            "Monero",
-            "IOTA",
-            "Dash",
-            "NEM",
-            "TRON",
-            "Zcash",
-            "GOLOS"
+            "NEO",
+            "XMR",
+            "DASH",
+            "XRB",
+            "HT",
+            "OMG",
+            "ZEC",
+            "ADA",
+            "BNB",
+            "ABT*",
+            "IOT",
+            "IOST",
     };
 
     private TestCryptoRepository() {
@@ -74,5 +78,15 @@ public class TestCryptoRepository implements CryptoRepository {
         float rightLimit = 10F;
         float generatedFloat = leftLimit + new Random().nextFloat() * (rightLimit - leftLimit);
         return generatedFloat;
+    }
+
+    @Override
+    public void addListener(RepoListener listener) {
+        // TODO: implements addListener()
+    }
+
+    @Override
+    public void deleteListener(RepoListener listener) {
+        // TODO: implements deleteListener()
     }
 }

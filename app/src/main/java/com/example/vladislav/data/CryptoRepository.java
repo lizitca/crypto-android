@@ -11,4 +11,13 @@ public interface CryptoRepository {
     List<CurrencyBaseInfo> getAllCurrenciesInfo();
 
     void updateCurrenciesInfo();
+
+    void addListener(RepoListener listener);
+
+    void deleteListener(RepoListener listener);
+
+    interface RepoListener {
+
+        void update();
+    }
 }

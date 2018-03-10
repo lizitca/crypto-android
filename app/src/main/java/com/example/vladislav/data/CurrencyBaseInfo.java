@@ -26,6 +26,14 @@ public class CurrencyBaseInfo {
     private float price;
     private float change;
 
+    public CurrencyBaseInfo() {
+        this(null);
+    }
+
+    public CurrencyBaseInfo(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
