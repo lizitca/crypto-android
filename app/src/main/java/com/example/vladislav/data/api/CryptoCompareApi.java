@@ -15,5 +15,5 @@ import retrofit2.http.Query;
 public interface CryptoCompareApi {
 
     @GET("/data/pricemultifull")
-    Call<HashMap<String, HashMap<String, HashMap<String, CurrencyDataModel>>>> getCurrencyData(@Query("fsyms") String fsyms, @Query("tsyms") String tsyms);
+    Call<CurrencyDataModel.Response> getCurrencyData(@Query("fsyms") String fsyms, @Query("tsyms") String tsyms);
 }

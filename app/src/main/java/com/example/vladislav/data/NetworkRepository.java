@@ -24,6 +24,7 @@ public class NetworkRepository implements CryptoRepository {
 
     private static NetworkRepository INSTANCE;
     private static final String BASE_URL = "https://min-api.cryptocompare.com/";
+    private static final String USD = "USD";
 
     private List<CurrencyBaseInfo> currencies;
     private List<RepoListener> listeners;
@@ -57,11 +58,11 @@ public class NetworkRepository implements CryptoRepository {
     @Override
     public void updateCurrenciesInfo() {
         for (final String currency: TestCryptoRepository.currenciesName) {
-            api.getCurrencyData(currency, "USD").enqueue(new Callback<HashMap<String, HashMap<String, HashMap<String, CurrencyDataModel>>>>() {
+            api.getCurrencyData(currency, USD).enqueue(new Callback<CurrencyDataModel.Response>() {
                 @Override
-                public void onResponse(Call<HashMap<String, HashMap<String, HashMap<String, CurrencyDataModel>>>> call, Response<HashMap<String, HashMap<String, HashMap<String, CurrencyDataModel>>>> response) {
+                public void onResponse(Call<CurrencyDataModel.Response> call, Response<CurrencyDataModel.Response> response) {
                     if (response.isSuccessful()) {
-                        CurrencyDataModel data = response.body().get("RAW").get(currency).get("USD");
+                        CurrencyDataModel data = response.body().getData().get(currency).get(USD);
                         CurrencyBaseInfo info = new CurrencyBaseInfo(data.getFROMSYMBOL());
 
                         try {
@@ -79,7 +80,7 @@ public class NetworkRepository implements CryptoRepository {
                 }
 
                 @Override
-                public void onFailure(Call<HashMap<String, HashMap<String, HashMap<String, CurrencyDataModel>>>> call, Throwable t) {
+                public void onFailure(Call<CurrencyDataModel.Response> call, Throwable t) {
                     Log.e(Constant.TAG, String.format("Failed to get %s data.", currency));
                 }
             });

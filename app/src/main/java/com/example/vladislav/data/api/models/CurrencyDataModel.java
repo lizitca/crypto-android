@@ -3,6 +3,8 @@ package com.example.vladislav.data.api.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Map;
+
 /**
  * Created by d3m1d0v on 10.03.2018.
  */
@@ -305,5 +307,23 @@ public class CurrencyDataModel {
 
     public void setTOTALVOLUME24HTO(String tOTALVOLUME24HTO) {
         this.tOTALVOLUME24HTO = tOTALVOLUME24HTO;
+    }
+
+    /**
+     * Wrapper over {@link CurrencyDataModel}
+     */
+    public class Response {
+
+        @SerializedName("RAW")
+        @Expose
+        private Map<String, Map<String, CurrencyDataModel>> data;
+
+        public Map<String, Map<String, CurrencyDataModel>> getData() {
+            return data;
+        }
+
+        public void setData(Map<String, Map<String, CurrencyDataModel>> data) {
+            this.data = data;
+        }
     }
 }
