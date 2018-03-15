@@ -58,21 +58,22 @@ public class NetworkRepository implements CryptoRepository {
     }
 
     @Override
-    public List<CurrencyBaseInfo> getAllCurrenciesInfo() {
+    public List<CurrencyBaseInfo> getCurrenciesList() {
         return currencies;
     }
 
     @Override
     public void updateCurrenciesInfo() {
-        currencies.clear();
         api.getCurrencyData(FSYMS, USD).enqueue(new Callback<CurrencyDataModel.Response>() {
             @Override
             public void onResponse(Call<CurrencyDataModel.Response> call, Response<CurrencyDataModel.Response> response) {
                 if (!response.isSuccessful()) {
                     notifyListeners(false);
                     Log.d(Constant.TAG, "response.isSuccessful(): false");
+                    return;
                 }
 
+                currencies.clear();
                 for (String currency : TestCryptoRepository.currenciesName) {
                     CurrencyDataModel data = response.body().getData().get(currency).get(USD);
                     CurrencyBaseInfo info = new CurrencyBaseInfo(data.getFROMSYMBOL());

@@ -37,7 +37,7 @@ public class MainScreenPresenter implements MainScreenContract.Presenter, Crypto
 
     @Override
     public void start() {
-        mView.showAllCurrenciesInfoItems(mRepository.getAllCurrenciesInfo());
+        mView.showAllCurrenciesInfoItems(mRepository.getCurrenciesList());
         mRepository.addListener(this);
     }
 

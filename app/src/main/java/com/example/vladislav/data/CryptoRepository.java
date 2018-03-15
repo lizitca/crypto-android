@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CryptoRepository {
 
-    List<CurrencyBaseInfo> getAllCurrenciesInfo();
+    List<CurrencyBaseInfo> getCurrenciesList();
 
     void updateCurrenciesInfo();
 

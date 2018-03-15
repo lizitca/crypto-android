@@ -49,7 +49,7 @@ public class TestCryptoRepository implements CryptoRepository {
     }
 
     @Override
-    public List<CurrencyBaseInfo> getAllCurrenciesInfo() {
+    public List<CurrencyBaseInfo> getCurrenciesList() {
         return currencies;
     }
 
