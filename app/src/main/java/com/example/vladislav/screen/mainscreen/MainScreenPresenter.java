@@ -31,6 +31,11 @@ public class MainScreenPresenter implements MainScreenContract.Presenter, Crypto
     }
 
     @Override
+    public void onRefreshRequested() {
+        mRepository.updateCurrenciesInfo();
+    }
+
+    @Override
     public void start() {
         mView.showAllCurrenciesInfoItems(mRepository.getAllCurrenciesInfo());
         mRepository.addListener(this);
@@ -40,15 +45,12 @@ public class MainScreenPresenter implements MainScreenContract.Presenter, Crypto
      * {@link CryptoRepository.RepoListener} implementation
      */
     @Override
-    public void update() {
+    public void refreshSuccessful() {
         mView.showUpdatedInfo();
     }
 
     @Override
-    public void updateList() {
-        mRepository.updateCurrenciesInfo();
-        mView.showAllCurrenciesInfoItems(mRepository.getAllCurrenciesInfo());
-        mRepository.addListener(this);
+    public void refreshFailed() {
+        mView.showRefreshFailedToast();
     }
-
 }

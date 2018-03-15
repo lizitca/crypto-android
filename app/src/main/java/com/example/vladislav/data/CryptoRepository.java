@@ -18,6 +18,8 @@ public interface CryptoRepository {
 
     interface RepoListener {
 
-        void update();
+        void refreshSuccessful();
+
+        void refreshFailed();
     }
 }

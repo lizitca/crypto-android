@@ -1,14 +1,11 @@
 package com.example.vladislav.screen.mainscreen;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +14,6 @@ import android.widget.Toast;
 
 import com.example.vladislav.data.CurrencyBaseInfo;
 import com.example.vladislav.data.NetworkRepository;
-import com.example.vladislav.data.TestCryptoRepository;
 import com.example.vladislav.menu.R;
 
 import java.util.List;
@@ -32,11 +28,10 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
 
         new MainScreenPresenter(this, NetworkRepository.getInstance());
     }
@@ -46,13 +41,13 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_main_screen, container, false);
-//        View viewCurrency = inflater.inflate(R.layout.main_screen_currency_item, container, false);
 
         mRecyclerView = view.findViewById(R.id.main_screen);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         mSwipeRefreshLayout = view.findViewById(R.id.refresh);
         mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
 
         mPresenter.start();
 
@@ -73,6 +68,13 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
     @Override
     public void showUpdatedInfo() {
         mAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void showRefreshFailedToast() {
+        mSwipeRefreshLayout.setRefreshing(false);
+        Toast.makeText(this.getContext(), "Refresh failed =(", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -86,23 +88,19 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
         mPresenter.onDestroy();
     }
 
+
+    /**
+     * Implementation {@link SwipeRefreshLayout.OnRefreshListener}
+     */
     @Override
     public void onRefresh() {
-
         mSwipeRefreshLayout.setRefreshing(true);
-        mSwipeRefreshLayout.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        }, 3000);
-        mPresenter.updateList();
+        mPresenter.onRefreshRequested();
     }
 
 
-
     /**
-     * Implementation RecyclerView.ViewHolder
+     * Implementation {@link RecyclerView.ViewHolder}
      */
     private class CryptoCurrencyHolder extends RecyclerView.ViewHolder
         implements View.OnClickListener {
@@ -151,7 +149,7 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
     }
 
     /**
-     * Implementation RecyclerView.Adapter
+     * Implementation {@link RecyclerView.Adapter}
      */
     private class CryptoCurrencyAdapter extends RecyclerView.Adapter<CryptoCurrencyHolder> {
 

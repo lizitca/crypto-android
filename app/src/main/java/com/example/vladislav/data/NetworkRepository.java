@@ -7,7 +7,6 @@ import com.example.vladislav.data.api.CryptoCompareApi;
 import com.example.vladislav.data.api.models.CurrencyDataModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -29,6 +28,7 @@ public class NetworkRepository implements CryptoRepository {
     private List<CurrencyBaseInfo> currencies;
     private List<RepoListener> listeners;
     private CryptoCompareApi api;
+    private final String FSYMS;
 
     public static NetworkRepository getInstance() {
         if (INSTANCE == null) {
@@ -47,6 +47,13 @@ public class NetworkRepository implements CryptoRepository {
         currencies = new ArrayList<>(TestCryptoRepository.currenciesName.length);
         listeners = new ArrayList<>();
 
+        StringBuilder builder = new StringBuilder();
+        for (String currency : TestCryptoRepository.currenciesName) {
+            builder.append(currency);
+            builder.append(',');
+        }
+        FSYMS = builder.toString();
+
         updateCurrenciesInfo();
     }
 
@@ -58,34 +65,39 @@ public class NetworkRepository implements CryptoRepository {
     @Override
     public void updateCurrenciesInfo() {
         currencies.clear();
-        for (final String currency: TestCryptoRepository.currenciesName) {
-            api.getCurrencyData(currency, USD).enqueue(new Callback<CurrencyDataModel.Response>() {
-                @Override
-                public void onResponse(Call<CurrencyDataModel.Response> call, Response<CurrencyDataModel.Response> response) {
-                    if (response.isSuccessful()) {
-                        CurrencyDataModel data = response.body().getData().get(currency).get(USD);
-                        CurrencyBaseInfo info = new CurrencyBaseInfo(data.getFROMSYMBOL());
+        api.getCurrencyData(FSYMS, USD).enqueue(new Callback<CurrencyDataModel.Response>() {
+            @Override
+            public void onResponse(Call<CurrencyDataModel.Response> call, Response<CurrencyDataModel.Response> response) {
+                if (!response.isSuccessful()) {
+                    notifyListeners(false);
+                    Log.d(Constant.TAG, "response.isSuccessful(): false");
+                }
 
-                        try {
-                            info.setPrice(Float.parseFloat(data.getPRICE()));
-                            info.setChange(Float.parseFloat(data.getCHANGEPCT24HOUR()));
-                        } catch (NumberFormatException e) {
-                            info.setPrice(-1F);
-                            info.setChange(0F);
-                            Log.e(Constant.TAG, "updateCurrenciesInfo: ", e);
-                        }
+                for (String currency : TestCryptoRepository.currenciesName) {
+                    CurrencyDataModel data = response.body().getData().get(currency).get(USD);
+                    CurrencyBaseInfo info = new CurrencyBaseInfo(data.getFROMSYMBOL());
 
-                        currencies.add(info);
-                        notifyListeners();
+                    try {
+                        info.setPrice(Float.parseFloat(data.getPRICE()));
+                        info.setChange(Float.parseFloat(data.getCHANGEPCT24HOUR()));
+                    } catch (NumberFormatException e) {
+                        info.setPrice(-1F);
+                        info.setChange(0F);
+                        Log.e(Constant.TAG, "updateCurrenciesInfo: ", e);
                     }
+
+                    currencies.add(info);
                 }
 
-                @Override
-                public void onFailure(Call<CurrencyDataModel.Response> call, Throwable t) {
-                    Log.e(Constant.TAG, String.format("Failed to get %s data.", currency));
-                }
-            });
-        }
+                notifyListeners(true);
+            }
+
+            @Override
+            public void onFailure(Call<CurrencyDataModel.Response> call, Throwable t) {
+                notifyListeners(false);
+                Log.d(Constant.TAG, "onFailure()");
+            }
+        });
     }
 
     @Override
@@ -98,9 +110,15 @@ public class NetworkRepository implements CryptoRepository {
         listeners.remove(listener);
     }
 
-    private void notifyListeners() {
-        for (RepoListener listener: listeners) {
-            listener.update();
+    private void notifyListeners(boolean successful) {
+        if (successful) {
+            for (RepoListener listener : listeners) {
+                listener.refreshSuccessful();
+            }
+        } else {
+            for (RepoListener listener : listeners) {
+                listener.refreshFailed();
+            }
         }
     }
 }

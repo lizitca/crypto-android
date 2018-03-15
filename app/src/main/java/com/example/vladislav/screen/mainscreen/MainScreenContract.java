@@ -19,6 +19,8 @@ public interface MainScreenContract {
         void showInfoToast(String currencyName);
 
         void showUpdatedInfo();
+
+        void showRefreshFailedToast();
     }
 
     interface Presenter extends BasePresenter {
@@ -27,6 +29,6 @@ public interface MainScreenContract {
 
         void onDestroy();
 
-        void updateList();
+        void onRefreshRequested();
     }
 }
