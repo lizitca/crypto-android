@@ -57,6 +57,7 @@ public class NetworkRepository implements CryptoRepository {
 
     @Override
     public void updateCurrenciesInfo() {
+        currencies.clear();
         for (final String currency: TestCryptoRepository.currenciesName) {
             api.getCurrencyData(currency, USD).enqueue(new Callback<CurrencyDataModel.Response>() {
                 @Override

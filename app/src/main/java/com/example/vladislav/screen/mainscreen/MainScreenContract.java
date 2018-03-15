@@ -26,5 +26,7 @@ public interface MainScreenContract {
         void onCurrencyItemClick(String currencyName);
 
         void onDestroy();
+
+        void updateList();
     }
 }
