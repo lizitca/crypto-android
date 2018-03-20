@@ -22,4 +22,6 @@
     <string name="arrow_up">\u2191</string>
     <string name="arrow_down">\u2193</string>
     <string name="rubl">\u20bd</string>
+
+    <string name="title_activity_detail_screen">DetailScreenActivity</string>
 </resources>
