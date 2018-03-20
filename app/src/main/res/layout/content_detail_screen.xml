@@ -1,20 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.vladislav.screen.detailscreen.DetailScreenActivity"
-    tools:showIn="@layout/activity_detail_screen"
-    android:weightSum="2"
-    android:orientation="vertical">
+    android:background="@color/background"
+    android:orientation="vertical"
+    android:weightSum="2">
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart"
+    <RelativeLayout
+        android:id="@+id/rl1"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/color_background_chart"/>
+        android:layout_height="314dp"
+        android:background="@color/color_background_chart"
+        android:gravity="top|start|end"
+        android:orientation="horizontal">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart"
+            android:layout_width="match_parent"
+            android:layout_height="187dp"
+            android:layout_margin="20dp">
+
+        </com.github.mikephil.charting.charts.LineChart>
+
+        <TextView
+            android:id="@+id/dollarVal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/chart"
+            android:layout_below="@+id/chart"
+            android:layout_marginTop="10dp"
+            android:text="5 123.09 $"
+            android:textSize="35sp"
+            android:textColor="@color/colorWhite"/>
+
+        <TextView
+            android:id="@+id/rublVal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/dollarVal"
+            android:layout_below="@+id/dollarVal"
+            android:text="5 123 000.09 \u20bd"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignEnd="@+id/chart"
+            android:layout_alignTop="@+id/dollarVal"
+            android:orientation="vertical"
+            android:id="@+id/linearLayout">
+
+            <TextView
+                android:id="@+id/changeHours1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/h1"
+                android:textColor="@color/colorWhite" />
+
+            <TextView
+                android:id="@+id/changeHours24"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/h24"
+                android:textColor="@color/colorWhite" />
+
+            <TextView
+                android:id="@+id/changeDays7Val"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/d7"
+                android:textColor="@color/colorWhite" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@+id/linearLayout"
+            android:layout_marginHorizontal="10dp"
+            android:layout_toStartOf="@+id/linearLayout"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/changeHours1Val"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="+3.56% \u2191"
+                android:textAlignment="textEnd" />
+
+            <TextView
+                android:id="@+id/changeHours24Val"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="+13.56% \u2191"
+                android:textAlignment="textEnd" />
+
+            <TextView
+                android:id="@+id/changeDays7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="-0.0056% \u2193"
+                android:textAlignment="textEnd" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/lvData"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

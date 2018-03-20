@@ -12,6 +12,9 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.LineData;
 
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
 public class DetailScreenActivity extends AppCompatActivity {
 
     private String currencyName;
@@ -19,6 +22,7 @@ public class DetailScreenActivity extends AppCompatActivity {
     private LineData lineData;
     private Legend legend;
 
+    String[] values = { "Капитализация 100.000.000.000$", "Выпущено 111.111.111 BTC", "Объем(24ч) 10.000.000$" };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +33,13 @@ public class DetailScreenActivity extends AppCompatActivity {
         currencyName = (String) getIntent().getStringExtra("currencyName");
         getSupportActionBar().setTitle(currencyName);
         chartSettings();
+
+        ListView lvMain = (ListView) findViewById(R.id.lvData);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, values);
+
+        lvMain.setAdapter(adapter);
     }
 
     private void chartSettings() {

@@ -18,7 +18,6 @@ import android.widget.Toast;
 import com.example.vladislav.data.CurrencyBaseInfo;
 import com.example.vladislav.data.NetworkRepository;
 import com.example.vladislav.menu.R;
-import com.example.vladislav.screen.detailscreen.DetailScreenFragment;
 
 import java.util.List;
 
