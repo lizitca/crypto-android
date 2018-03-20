@@ -1,10 +1,10 @@
 package com.example.vladislav.screen.menu;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.example.vladislav.menu.R;
 import com.example.vladislav.screen.about.FragmentAboutApp;
-import com.example.vladislav.screen.detailscreen.DetailScreenFragment;
+import com.example.vladislav.screen.detailscreen.DetailScreenActivity;
 import com.example.vladislav.screen.mainscreen.MainScreenFragment;
 
 public class MenuActivity extends AppCompatActivity
@@ -131,16 +131,9 @@ public class MenuActivity extends AppCompatActivity
 
     @Override
     public void onSelectedRelativeLayout(String currencyName) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        Intent intent = new Intent(this, DetailScreenActivity.class);
+        intent.putExtra("currencyName", currencyName);
+        startActivity(intent);
 
-//        DetailScreenFragment detailScreenFragment = (DetailScreenFragment) fragmentManager.findFragmentById(R.id.chart);
-        DetailScreenFragment detailScreenFragment = new DetailScreenFragment();
-
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.screen_area, detailScreenFragment);
-        fragmentTransaction.addToBackStack(currencyName);
-        fragmentTransaction.commit();
-
-        detailScreenFragment.setCurrencyName(currencyName);
     }
 }
