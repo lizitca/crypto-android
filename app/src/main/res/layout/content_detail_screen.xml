@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/dollarVal"
             android:layout_below="@+id/dollarVal"
-            android:text="5 123 000.09 P"
+            android:text="5 123 000.09 \u20bd"
             android:textColor="@color/colorWhite"
             android:textSize="20sp" />
 
@@ -56,21 +56,21 @@
                 android:id="@+id/changeHours1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="1ч"
+                android:text="@string/h1"
                 android:textColor="@color/colorWhite" />
 
             <TextView
                 android:id="@+id/changeHours24"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="24ч"
+                android:text="@string/h24"
                 android:textColor="@color/colorWhite" />
 
             <TextView
                 android:id="@+id/changeDays7Val"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="7д"
+                android:text="@string/d7"
                 android:textColor="@color/colorWhite" />
         </LinearLayout>
 
@@ -86,19 +86,22 @@
                 android:id="@+id/changeHours1Val"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:text="+3.56% \u2191"
+                android:textAlignment="textEnd" />
 
             <TextView
                 android:id="@+id/changeHours24Val"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:text="+13.56% \u2191"
+                android:textAlignment="textEnd" />
 
             <TextView
                 android:id="@+id/changeDays7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="\u2191" />
+                android:text="-0.0056% \u2193"
+                android:textAlignment="textEnd" />
         </LinearLayout>
 
     </RelativeLayout>
