@@ -3,18 +3,22 @@ package com.example.vladislav.screen.mainscreen;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vladislav.data.CurrencyBaseInfo;
 import com.example.vladislav.data.NetworkRepository;
 import com.example.vladislav.menu.R;
+import com.example.vladislav.screen.detailscreen.DetailScreenFragment;
 
 import java.util.List;
 
@@ -123,6 +127,9 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
         @Override
         public void onClick(View v) {
             MainScreenFragment.this.mPresenter.onCurrencyItemClick(mCurrencyInfo.getName());
+
+            OnSelectedRelativeLayoutListener listener = (OnSelectedRelativeLayoutListener) getActivity();
+            listener.onSelectedRelativeLayout(mCurrencyInfo.getName());
         }
 
         public void setCurrencyData(CurrencyBaseInfo info) {
@@ -175,5 +182,10 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
         public int getItemCount() {
             return mCurrencies.size();
         }
+    }
+
+    public interface OnSelectedRelativeLayoutListener {
+
+        void onSelectedRelativeLayout(String currencyName);
     }
 }

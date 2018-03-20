@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,10 +17,11 @@ import android.widget.Toast;
 
 import com.example.vladislav.menu.R;
 import com.example.vladislav.screen.about.FragmentAboutApp;
+import com.example.vladislav.screen.detailscreen.DetailScreenFragment;
 import com.example.vladislav.screen.mainscreen.MainScreenFragment;
 
 public class MenuActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MenuContract.View {
+        implements NavigationView.OnNavigationItemSelectedListener, MenuContract.View, MainScreenFragment.OnSelectedRelativeLayoutListener {
 
     private MenuContract.Presenter mPresenter;
 
@@ -121,5 +123,24 @@ public class MenuActivity extends AppCompatActivity
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.screen_area, newFragment);
         fragmentTransaction.commit();
+    }
+
+    public void setActionBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
+
+    @Override
+    public void onSelectedRelativeLayout(String currencyName) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+//        DetailScreenFragment detailScreenFragment = (DetailScreenFragment) fragmentManager.findFragmentById(R.id.chart);
+        DetailScreenFragment detailScreenFragment = new DetailScreenFragment();
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.screen_area, detailScreenFragment);
+        fragmentTransaction.addToBackStack(currencyName);
+        fragmentTransaction.commit();
+
+        detailScreenFragment.setCurrencyName(currencyName);
     }
 }
