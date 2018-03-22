@@ -2,7 +2,7 @@ package com.example.vladislav.screen.mainscreen;
 
 import com.example.vladislav.base.BasePresenter;
 import com.example.vladislav.base.BaseView;
-import com.example.vladislav.data.CurrencyBaseInfo;
+import com.example.vladislav.data.CurrencyData;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public interface MainScreenContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showAllCurrenciesInfoItems(List<CurrencyBaseInfo> currencies);
+        void showCurrenciesData(List<CurrencyData> dataList);
 
         void showInfoToast(String currencyName);
 
@@ -26,8 +26,6 @@ public interface MainScreenContract {
     interface Presenter extends BasePresenter {
 
         void onCurrencyItemClick(String currencyName);
-
-        void onDestroy();
 
         void onRefreshRequested();
     }

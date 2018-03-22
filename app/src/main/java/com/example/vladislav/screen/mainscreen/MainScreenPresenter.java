@@ -2,13 +2,17 @@ package com.example.vladislav.screen.mainscreen;
 
 import android.support.annotation.NonNull;
 
-import com.example.vladislav.data.CryptoRepository;
+import com.example.vladislav.data.repository.CryptoRepository;
+import com.example.vladislav.data.CurrencyData;
+
+import java.util.List;
 
 /**
  * Created by d3m1d0v on 04.03.2018.
  */
 
-public class MainScreenPresenter implements MainScreenContract.Presenter, CryptoRepository.RepoListener {
+public class MainScreenPresenter implements MainScreenContract.Presenter,
+        CryptoRepository.RefreshCallback, CryptoRepository.GetDataCallback {
 
     private final MainScreenContract.View mView;
     private final CryptoRepository mRepository;
@@ -25,32 +29,34 @@ public class MainScreenPresenter implements MainScreenContract.Presenter, Crypto
         mView.showInfoToast(currencyName);
     }
 
-    @Override
-    public void onDestroy() {
-        mRepository.deleteListener(this);
-    }
 
     @Override
     public void onRefreshRequested() {
-        mRepository.updateCurrenciesInfo();
+        mRepository.updateCurrenciesData(this);
     }
 
     @Override
     public void start() {
-        mView.showAllCurrenciesInfoItems(mRepository.getCurrenciesList());
-        mRepository.addListener(this);
+        mRepository.getCurrenciesDataList(this);
     }
 
     /**
-     * {@link CryptoRepository.RepoListener} implementation
+     * {@link CryptoRepository.GetDataCallback} implementation
      */
     @Override
-    public void refreshSuccessful() {
-        mView.showUpdatedInfo();
+    public void onData(@NonNull List<CurrencyData> dataList) {
+        mView.showCurrenciesData(dataList);
     }
 
+    /**
+     * {@link CryptoRepository.RefreshCallback} implementation
+     */
     @Override
-    public void refreshFailed() {
-        mView.showRefreshFailedToast();
+    public void notify(boolean successful) {
+        if (successful) {
+            mView.showUpdatedInfo();
+        } else {
+            mView.showRefreshFailedToast();
+        }
     }
 }

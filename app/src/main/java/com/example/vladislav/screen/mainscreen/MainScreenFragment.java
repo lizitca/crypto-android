@@ -3,20 +3,17 @@ package com.example.vladislav.screen.mainscreen;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.vladislav.data.CurrencyBaseInfo;
-import com.example.vladislav.data.NetworkRepository;
+import com.example.vladislav.data.CurrencyData;
+import com.example.vladislav.data.repository.MainRepository;
 import com.example.vladislav.menu.R;
 
 import java.util.List;
@@ -36,7 +33,7 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        new MainScreenPresenter(this, NetworkRepository.getInstance());
+        new MainScreenPresenter(this, MainRepository.getInstance());
     }
 
     @Nullable
@@ -58,7 +55,7 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
     }
 
     @Override
-    public void showAllCurrenciesInfoItems(List<CurrencyBaseInfo> currencies) {
+    public void showCurrenciesData(List<CurrencyData> currencies) {
         mAdapter = new CryptoCurrencyAdapter(currencies);
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -85,12 +82,6 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
         mPresenter = presenter;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mPresenter.onDestroy();
-    }
-
 
     /**
      * Implementation {@link SwipeRefreshLayout.OnRefreshListener}
@@ -108,7 +99,7 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
     private class CryptoCurrencyHolder extends RecyclerView.ViewHolder
         implements View.OnClickListener {
 
-        private CurrencyBaseInfo mCurrencyInfo;
+        private CurrencyData mCurrencyData;
         private TextView mTitle;
         private TextView mValue;
         private TextView mChange;
@@ -125,20 +116,20 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
 
         @Override
         public void onClick(View v) {
-            MainScreenFragment.this.mPresenter.onCurrencyItemClick(mCurrencyInfo.getName());
+            MainScreenFragment.this.mPresenter.onCurrencyItemClick(mCurrencyData.getName());
 
             OnSelectedRelativeLayoutListener listener = (OnSelectedRelativeLayoutListener) getActivity();
-            listener.onSelectedRelativeLayout(mCurrencyInfo.getName());
+            listener.onSelectedRelativeLayout(mCurrencyData.getName());
         }
 
-        public void setCurrencyData(CurrencyBaseInfo info) {
-            mCurrencyInfo = info;
+        public void setCurrencyData(CurrencyData data) {
+            mCurrencyData = data;
 
-            mTitle.setText(mCurrencyInfo.getName());
-            mValue.setText(mCurrencyInfo.getPriceValue());
-            mChange.setText(mCurrencyInfo.getChangeValue());
+            mTitle.setText(mCurrencyData.getName());
+            mValue.setText(mCurrencyData.getFormattedPrice());
+            mChange.setText(mCurrencyData.getFormattedChange());
 
-            switch (mCurrencyInfo.getChangeValue().charAt(0)) {
+            switch (mCurrencyData.getFormattedChange().charAt(0)) {
                 case '+':
                     mChange.setTextColor(getResources().getColor(R.color.currency_item_change_positiv));
                     break;
@@ -159,9 +150,9 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
      */
     private class CryptoCurrencyAdapter extends RecyclerView.Adapter<CryptoCurrencyHolder> {
 
-        private List<CurrencyBaseInfo> mCurrencies;
+        private List<CurrencyData> mCurrencies;
 
-        public CryptoCurrencyAdapter(List<CurrencyBaseInfo> mCurrencies) {
+        public CryptoCurrencyAdapter(List<CurrencyData> mCurrencies) {
             this.mCurrencies = mCurrencies;
         }
 
