@@ -18,10 +18,7 @@
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chart"
             android:layout_width="match_parent"
-            android:layout_height="187dp"
-            android:layout_margin="20dp">
-
-        </com.github.mikephil.charting.charts.LineChart>
+            android:layout_height="187dp" />
 
         <TextView
             android:id="@+id/dollarVal"
@@ -30,6 +27,7 @@
             android:layout_alignStart="@+id/chart"
             android:layout_below="@+id/chart"
             android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
             android:text="5 123.09 $"
             android:textSize="35sp"
             android:textColor="@color/colorWhite"/>
@@ -49,6 +47,7 @@
             android:layout_height="match_parent"
             android:layout_alignEnd="@+id/chart"
             android:layout_alignTop="@+id/dollarVal"
+            android:layout_marginRight="20dp"
             android:orientation="vertical"
             android:id="@+id/linearLayout">
 

@@ -20,4 +20,6 @@
     <!--chart color-->
     <color name="color_background_chart">#087d7f</color>
     <color name="color_chart">#06a18f</color>
+    <color name="color_value">#00FFFF</color>
+    <color name="color_circle">#3b7fed</color>
 </resources>
