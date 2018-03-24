@@ -21,7 +21,10 @@ import com.example.vladislav.screen.detailscreen.DetailScreenActivity;
 import com.example.vladislav.screen.mainscreen.MainScreenFragment;
 
 public class MenuActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MenuContract.View, MainScreenFragment.OnSelectedRelativeLayoutListener {
+        implements
+        NavigationView.OnNavigationItemSelectedListener,
+        MenuContract.View,
+        MainScreenFragment.OnSelectedRelativeLayoutListener {
 
     private MenuContract.Presenter mPresenter;
 

@@ -1,17 +1,16 @@
 package com.example.vladislav.screen.detailscreen;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.example.vladislav.data.CurrencyData;
 import com.example.vladislav.data.api.CryptoCompareApi;
 import com.example.vladislav.data.api.models.CurrencyDataModel;
 import com.example.vladislav.menu.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -22,6 +21,9 @@ import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -48,10 +50,10 @@ public class DetailScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_screen);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        currencyName = (String) getIntent().getStringExtra("currencyName");
+        currencyName = getIntent().getStringExtra("currencyName");
         getSupportActionBar().setTitle(currencyName);
         chartSettings();
 
@@ -63,6 +65,27 @@ public class DetailScreenActivity extends AppCompatActivity {
         lvMain.setAdapter(adapter);
 
         setApi();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_menu_detail_screen, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_notification:
+                Intent intent = new Intent(this, ICONotification.class);
+                this.startActivity(intent);
+                break;
+
+        }
+
+        return true;
     }
 
     @Override

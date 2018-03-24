@@ -24,4 +24,5 @@
     <string name="rubl">\u20bd</string>
 
     <string name="title_activity_detail_screen">DetailScreenActivity</string>
+    <string name="title_activity_notification">Notification</string>
 </resources>
