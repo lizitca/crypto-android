@@ -2,6 +2,7 @@ package com.example.vladislav.screen.detailscreen;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -26,12 +27,17 @@ public class DetailScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_screen);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
         currencyName = getIntent().getStringExtra("currencyName");
-        getSupportActionBar().setTitle(currencyName);
+      setTitle(currencyName);
 
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         mChart = new DetailScreenChart((LineChart) findViewById(R.id.chart), currencyName);
         mChart.initialize();
 
@@ -41,6 +47,14 @@ public class DetailScreenActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, values);
 
         lvMain.setAdapter(adapter);
+
+    }
+
+
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 
     @Override
@@ -58,6 +72,9 @@ public class DetailScreenActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, ICONotification.class);
                 this.startActivity(intent);
                 break;
+            case android.R.id.home:
+                finish();
+                return true;
 
         }
 

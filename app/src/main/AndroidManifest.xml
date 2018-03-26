@@ -26,8 +26,7 @@
         </activity>
         <activity
             android:name="com.example.vladislav.screen.detailscreen.DetailScreenActivity"
-            android:label="@string/title_activity_detail_screen"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_detail_screen" />
         <activity android:name="com.example.vladislav.screen.detailscreen.ICONotification"></activity>
     </application>
 

@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-    android:id="@+id/action_notification"
-    android:icon="@android:drawable/ic_popup_reminder"
-    android:title=""
-    android:visible="true"
-    app:showAsAction="ifRoom" />
+        android:id="@+id/action_notification"
+        android:icon="@android:drawable/ic_popup_reminder"
+        android:title=""
+        app:showAsAction="ifRoom" />
 
 </menu>
