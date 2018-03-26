@@ -47,6 +47,7 @@ public class TestFirebaseMessagingService extends FirebaseMessagingService {
         mNotify.setContentTitle(title);
         mNotify.setContentText(text);
         mNotify.setDefaults(Notification.DEFAULT_SOUND);
+        mNotify.setAutoCancel(true);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
