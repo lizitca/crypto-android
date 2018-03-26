@@ -2,6 +2,7 @@ package com.example.vladislav.data.repository;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.vladislav.app.Constant;
@@ -12,6 +13,8 @@ import com.example.vladislav.data.api.models.CurrencyDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -33,7 +36,10 @@ public class MainRepository implements CryptoRepository {
 
     private final Executor dbExecutor;
 
-    private List<CurrencyData> currencies;
+    private List<CurrencyData> currenciesList;
+    private Map<String, CurrencyData> currenciesMap;
+
+
     private final CryptoCompareApi api;
     private final CryptoDatabase db;
     private final String FSYMS;
@@ -54,7 +60,8 @@ public class MainRepository implements CryptoRepository {
 
         dbExecutor = Executors.newSingleThreadExecutor();
         db = CryptoDatabase.getInstance();
-        currencies = new ArrayList<>();
+        currenciesList = new ArrayList<>();
+        currenciesMap = new TreeMap<>();
 
         StringBuilder fsymsBuilder = new StringBuilder();
         for (String currency : Constant.CURRENCIES_NAME) {
@@ -65,11 +72,11 @@ public class MainRepository implements CryptoRepository {
     }
 
     @Override
-    public void getCurrenciesDataList(GetDataCallback callback) {
-        if (currencies.size() == 0) {
+    public void getCurrenciesDataList(GetDataListCallback callback) {
+        if (currenciesList.size() == 0) {
             getCurrenciesDataFromDb(callback);
         } else {
-            callback.onData(currencies);
+            callback.onData(currenciesList);
         }
     }
 
@@ -78,31 +85,28 @@ public class MainRepository implements CryptoRepository {
         api.getCurrencyData(FSYMS, USD).enqueue(new Callback<CurrencyDataModel.Response>() {
             @Override
             public void onResponse(Call<CurrencyDataModel.Response> call, Response<CurrencyDataModel.Response> response) {
-                if (!response.isSuccessful()) {
+                if (!response.isSuccessful() || response.body().getData() == null) {
                     callback.notify(false);
                     Log.d(Constant.TAG, "response.isSuccessful(): false");
                     return;
                 }
 
-                int exCurrenciesSize = currencies.size();
-                currencies.clear();
+                int exCurrenciesSize = currenciesList.size();
+                currenciesList.clear();
+                currenciesMap.clear();
                 for (String currency : Constant.CURRENCIES_NAME) {
                     CurrencyDataModel dataModel = response.body().getData().get(currency).get(USD);
+                    CurrencyData data = MainRepository.DataModelToData(dataModel);
 
-                    CurrencyData data = new CurrencyData(
-                            dataModel.getFROMSYMBOL(),
-                            Float.parseFloat(dataModel.getPRICE()),
-                            Float.parseFloat(dataModel.getCHANGEPCT24HOUR()),
-                            dataModel.getLASTUPDATE()
-                    );
-
-                    currencies.add(data);
+                    currenciesMap.put(data.getName(), data);
                 }
 
+                currenciesList.addAll(currenciesMap.values());
+
                 if (exCurrenciesSize == 0) {
-                    insertIntoDb();
+                    insertDataListIntoDb();
                 } else {
-                    updateDb();
+                    updateDataListIntoDb();
                 }
 
                 callback.notify(true);
@@ -116,7 +120,61 @@ public class MainRepository implements CryptoRepository {
         });
     }
 
-    private void getCurrenciesDataFromDb(final GetDataCallback callback) {
+    @Override
+    public void getCurrencyData(@NonNull final String currencyName, @NonNull final GetDataCallback callback) {
+        if (currenciesMap.containsKey(currencyName)) {
+            callback.onData(currenciesMap.get(currencyName));
+            return;
+        }
+
+        dbExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final CurrencyData data = db.currencyDataDao().getCurrencyDataByName(currencyName);
+                if (data == null) {
+                    callback.onData(null);
+                    return;
+                }
+
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        currenciesMap.put(data.getName(), data);
+                        callback.onData(data);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void updateCurrencyData(@NonNull final String currencyName, @NonNull final RefreshCallback callback) {
+        api.getCurrencyData(currencyName, USD).enqueue(new Callback<CurrencyDataModel.Response>() {
+            @Override
+            public void onResponse(Call<CurrencyDataModel.Response> call, Response<CurrencyDataModel.Response> response) {
+                if (!response.isSuccessful() || response.body().getData() == null) {
+                    callback.notify(false);
+                    Log.d(Constant.TAG, "response.isSuccessful(): false");
+                    return;
+                }
+
+                CurrencyDataModel dataModel = response.body().getData().get(currencyName).get(USD);
+                CurrencyData data = MainRepository.DataModelToData(dataModel);
+
+                insertCurrencyIntoDb(data);
+                currenciesMap.put(data.getName(),data);
+                callback.notify(true);
+            }
+
+            @Override
+            public void onFailure(Call<CurrencyDataModel.Response> call, Throwable t) {
+                callback.notify(false);
+                Log.d(Constant.TAG, "onFailure()");
+            }
+        });
+    }
+
+    private void getCurrenciesDataFromDb(final GetDataListCallback callback) {
         dbExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -124,30 +182,56 @@ public class MainRepository implements CryptoRepository {
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                        currencies.clear();
-                        currencies.addAll(dataList);
-                        callback.onData(currencies);
+                        currenciesList.clear();
+                        currenciesMap.clear();
+
+                        for (CurrencyData data : dataList) {
+                            currenciesMap.put(data.getName(), data);
+                        }
+                        currenciesList.addAll(dataList);
+                        callback.onData(currenciesList);
                     }
                 });
             }
         });
     }
 
-    private void insertIntoDb() {
+    private void insertCurrencyIntoDb(final CurrencyData data) {
         dbExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                db.currencyDataDao().insertCurrenciesData(currencies);
+                db.currencyDataDao().insertCurrencyData(data);
             }
         });
     }
 
-    private void updateDb() {
+    private void insertDataListIntoDb() {
         dbExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                db.currencyDataDao().updateCurrenciesData(currencies);
+                db.currencyDataDao().insertCurrenciesData(currenciesList);
             }
         });
+    }
+
+    private void updateDataListIntoDb() {
+        dbExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                db.currencyDataDao().updateCurrenciesData(currenciesList);
+            }
+        });
+    }
+
+    private static CurrencyData DataModelToData(CurrencyDataModel dataModel) {
+        return new CurrencyData(
+                dataModel.getFROMSYMBOL(),
+                Float.parseFloat(dataModel.getPRICE()),
+                Float.parseFloat(dataModel.getCHANGEPCT24HOUR()),
+                dataModel.getSUPPLY(),
+                dataModel.getMKTCAP(),
+                dataModel.getVOLUME24HOURTO(),
+                dataModel.getLASTUPDATE()
+        );
     }
 }

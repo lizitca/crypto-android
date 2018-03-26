@@ -24,6 +24,15 @@ public final class CurrencyData {
     @ColumnInfo(name = "change")
     private final float mChange;
 
+    @ColumnInfo(name = "supply")
+    private final String mSupply;
+
+    @ColumnInfo(name = "capitalization")
+    private final String mCapitalization;
+
+    @ColumnInfo(name = "volume")
+    private final String mVolume24H;
+
     @NonNull
     @ColumnInfo(name = "last_update")
     private final String mLastUpdate;
@@ -31,11 +40,14 @@ public final class CurrencyData {
     @Ignore private final String mFormattedPrice;
     @Ignore private final String mFormattedChange;
 
-    public CurrencyData(@NonNull String name, float price,
-                        float change, @NonNull String lastUpdate) {
+    public CurrencyData(@NonNull String name, float price, float change, @NonNull String supply,
+                        @NonNull String capitalization, @NonNull String volume24H, @NonNull String lastUpdate) {
         mName = name;
         mPrice = price;
         mChange = change;
+        mSupply = supply + " " + mName;
+        mCapitalization = capitalization;
+        mVolume24H = volume24H;
         mLastUpdate = lastUpdate;
 
         mFormattedPrice = String.format("$%,.2f", mPrice);
@@ -53,6 +65,21 @@ public final class CurrencyData {
 
     public float getChange() {
         return mChange;
+    }
+
+    @NonNull
+    public String getSupply() {
+        return mSupply;
+    }
+
+    @NonNull
+    public String getCapitalization() {
+        return mCapitalization;
+    }
+
+    @NonNull
+    public String getVolume24H() {
+        return mVolume24H;
     }
 
     @NonNull

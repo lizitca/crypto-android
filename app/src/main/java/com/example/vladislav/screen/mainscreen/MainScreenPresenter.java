@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 public class MainScreenPresenter implements MainScreenContract.Presenter,
-        CryptoRepository.RefreshCallback, CryptoRepository.GetDataCallback {
+        CryptoRepository.RefreshCallback, CryptoRepository.GetDataListCallback {
 
     private final MainScreenContract.View mView;
     private final CryptoRepository mRepository;
@@ -41,7 +41,7 @@ public class MainScreenPresenter implements MainScreenContract.Presenter,
     }
 
     /**
-     * {@link CryptoRepository.GetDataCallback} implementation
+     * {@link CryptoRepository.GetDataListCallback} implementation
      */
     @Override
     public void onData(@NonNull List<CurrencyData> dataList) {

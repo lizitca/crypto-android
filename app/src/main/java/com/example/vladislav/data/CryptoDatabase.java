@@ -10,7 +10,7 @@ import com.example.vladislav.app.App;
  * Created by d3m1d0v on 22.03.2018.
  */
 
-@Database(entities = {CurrencyData.class}, version = 1)
+@Database(entities = {CurrencyData.class}, version = 2)
 public abstract class CryptoDatabase extends RoomDatabase {
 
     private static CryptoDatabase INSTANCE;
@@ -20,7 +20,8 @@ public abstract class CryptoDatabase extends RoomDatabase {
     public static CryptoDatabase getInstance() {
         if (INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(App.getAppContext(),
-                    CryptoDatabase.class, "Crypto.db").build();
+                    CryptoDatabase.class, "Crypto.db")
+                    .fallbackToDestructiveMigration().build();
         }
         return INSTANCE;
     }

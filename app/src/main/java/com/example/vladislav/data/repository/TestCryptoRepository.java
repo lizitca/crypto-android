@@ -1,5 +1,7 @@
 package com.example.vladislav.data.repository;
 
+import android.support.annotation.NonNull;
+
 import com.example.vladislav.app.Constant;
 import com.example.vladislav.data.CurrencyData;
 
@@ -29,7 +31,7 @@ public class TestCryptoRepository implements CryptoRepository {
     }
 
     @Override
-    public void getCurrenciesDataList(GetDataCallback callback) {
+    public void getCurrenciesDataList(GetDataListCallback callback) {
         callback.onData(currencies);
     }
 
@@ -42,12 +44,25 @@ public class TestCryptoRepository implements CryptoRepository {
                     name,
                     genPriceValue(),
                     genChangeValue(),
+                    "0",
+                    "0",
+                    "0",
                     "-1"
             );
             currencies.add(data);
         }
 
         callback.notify(true);
+    }
+
+    @Override
+    public void getCurrencyData(@NonNull String currencyName, @NonNull GetDataCallback callback) {
+        // TODO: implements method
+    }
+
+    @Override
+    public void updateCurrencyData(@NonNull String currencyName, @NonNull RefreshCallback callback) {
+        // TODO: implements method
     }
 
     private float genPriceValue() {
