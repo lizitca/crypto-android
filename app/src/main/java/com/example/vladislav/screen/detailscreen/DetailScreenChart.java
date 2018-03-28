@@ -4,6 +4,8 @@ import android.graphics.Color;
 
 import com.example.vladislav.data.api.CryptoCompareApi;
 import com.example.vladislav.data.api.models.CurrencyDataModel;
+import com.example.vladislav.data.repository.CryptoRepository;
+import com.example.vladislav.data.repository.MainRepository;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -36,6 +38,8 @@ public class DetailScreenChart {
     private LineChart mChart;
     private String currencyName;
     private CryptoCompareApi api;
+
+    private final CryptoRepository mRepository = MainRepository.getInstance();
 
     public DetailScreenChart(LineChart mChart, String currencyName) {
         this.mChart = mChart;
@@ -107,7 +111,7 @@ public class DetailScreenChart {
         data.notifyDataChanged();
         mChart.notifyDataSetChanged();
         mChart.setVisibleXRangeMaximum(5);
-        mChart.invalidate();
+        mChart.moveViewToX(data.getEntryCount());
     }
 
     public void updateChart() {
