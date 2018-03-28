@@ -28,5 +28,11 @@ public interface MainScreenContract {
         void onCurrencyItemClick(String currencyName);
 
         void onRefreshRequested();
+
+        void onAlphabetSortSelected();
+
+        void onPriceSortSelected();
+
+        void onChangeSortSelected();
     }
 }

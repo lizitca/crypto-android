@@ -36,9 +36,7 @@ public class MainRepository implements CryptoRepository {
 
     private final Executor dbExecutor;
 
-    private List<CurrencyData> currenciesList;
     private Map<String, CurrencyData> currenciesMap;
-
 
     private final CryptoCompareApi api;
     private final CryptoDatabase db;
@@ -60,7 +58,6 @@ public class MainRepository implements CryptoRepository {
 
         dbExecutor = Executors.newSingleThreadExecutor();
         db = CryptoDatabase.getInstance();
-        currenciesList = new ArrayList<>();
         currenciesMap = new TreeMap<>();
 
         StringBuilder fsymsBuilder = new StringBuilder();
@@ -73,10 +70,10 @@ public class MainRepository implements CryptoRepository {
 
     @Override
     public void getCurrenciesDataList(GetDataListCallback callback) {
-        if (currenciesList.size() == 0) {
+        if (currenciesMap.size() == 0) {
             getCurrenciesDataFromDb(callback);
         } else {
-            callback.onData(currenciesList);
+            callback.onData(new ArrayList<>(currenciesMap.values()));
         }
     }
 
@@ -91,8 +88,7 @@ public class MainRepository implements CryptoRepository {
                     return;
                 }
 
-                int exCurrenciesSize = currenciesList.size();
-                currenciesList.clear();
+                int exCurrenciesSize = currenciesMap.size();
                 currenciesMap.clear();
                 for (String currency : Constant.CURRENCIES_NAME) {
                     CurrencyDataModel dataModel = response.body().getData().get(currency).get(USD);
@@ -100,8 +96,6 @@ public class MainRepository implements CryptoRepository {
 
                     currenciesMap.put(data.getName(), data);
                 }
-
-                currenciesList.addAll(currenciesMap.values());
 
                 if (exCurrenciesSize == 0) {
                     insertDataListIntoDb();
@@ -161,7 +155,7 @@ public class MainRepository implements CryptoRepository {
                 CurrencyDataModel dataModel = response.body().getData().get(currencyName).get(USD);
                 CurrencyData data = MainRepository.DataModelToData(dataModel);
 
-                insertCurrencyIntoDb(data);
+                insertDataIntoDb(data);
                 currenciesMap.put(data.getName(),data);
                 callback.notify(true);
             }
@@ -182,21 +176,18 @@ public class MainRepository implements CryptoRepository {
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                        currenciesList.clear();
                         currenciesMap.clear();
-
                         for (CurrencyData data : dataList) {
                             currenciesMap.put(data.getName(), data);
                         }
-                        currenciesList.addAll(dataList);
-                        callback.onData(currenciesList);
+                        callback.onData(new ArrayList<>(currenciesMap.values()));
                     }
                 });
             }
         });
     }
 
-    private void insertCurrencyIntoDb(final CurrencyData data) {
+    private void insertDataIntoDb(final CurrencyData data) {
         dbExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -209,7 +200,7 @@ public class MainRepository implements CryptoRepository {
         dbExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                db.currencyDataDao().insertCurrenciesData(currenciesList);
+                db.currencyDataDao().insertCurrenciesData(new ArrayList<>(currenciesMap.values()));
             }
         });
     }
@@ -218,7 +209,7 @@ public class MainRepository implements CryptoRepository {
         dbExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                db.currencyDataDao().updateCurrenciesData(currenciesList);
+                db.currencyDataDao().updateCurrenciesData(new ArrayList<>(currenciesMap.values()));
             }
         });
     }

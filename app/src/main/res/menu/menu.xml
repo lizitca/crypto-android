@@ -2,11 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!--Угловое меню справа-->
-    <!--<item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />-->
+    <!--Угловое меню-->
+    <item
+        android:id="@+id/menu_alphabetical"
+        android:title="Сорт. А...я"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menu_price"
+        android:title="Сорт. $$$"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menu_change"
+        android:title="Сорт. +/-%"
+        app:showAsAction="never"/>
 
 </menu>
+

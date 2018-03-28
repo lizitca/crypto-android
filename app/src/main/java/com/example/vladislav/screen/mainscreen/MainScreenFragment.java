@@ -7,15 +7,20 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.vladislav.data.CryptoDatabase;
 import com.example.vladislav.data.CurrencyData;
 import com.example.vladislav.data.repository.MainRepository;
 import com.example.vladislav.menu.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,12 +31,13 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
 
     private MainScreenContract.Presenter mPresenter;
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private CryptoCurrencyAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
         new MainScreenPresenter(this, MainRepository.getInstance());
     }
@@ -55,9 +61,40 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_alphabetical:
+                mPresenter.onAlphabetSortSelected();
+                break;
+
+            case R.id.menu_price:
+                mPresenter.onPriceSortSelected();
+                break;
+
+            case R.id.menu_change:
+                mPresenter.onChangeSortSelected();
+                break;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+        return true;
+    }
+
+    @Override
     public void showCurrenciesData(List<CurrencyData> currencies) {
-        mAdapter = new CryptoCurrencyAdapter(currencies);
-        mRecyclerView.setAdapter(mAdapter);
+        if (mAdapter == null) {
+            mAdapter = new CryptoCurrencyAdapter(currencies);
+            mRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.setDataList(currencies);
+        }
     }
 
     @Override
@@ -150,10 +187,10 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
      */
     private class CryptoCurrencyAdapter extends RecyclerView.Adapter<CryptoCurrencyHolder> {
 
-        private List<CurrencyData> mCurrencies;
+        private List<CurrencyData> mDataList;
 
-        public CryptoCurrencyAdapter(List<CurrencyData> mCurrencies) {
-            this.mCurrencies = mCurrencies;
+        CryptoCurrencyAdapter(List<CurrencyData> mCurrencies) {
+            this.mDataList = mCurrencies;
         }
 
         @Override
@@ -165,12 +202,17 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
 
         @Override
         public void onBindViewHolder(CryptoCurrencyHolder holder, int position) {
-            holder.setCurrencyData(mCurrencies.get(position));
+            holder.setCurrencyData(mDataList.get(position));
         }
 
         @Override
         public int getItemCount() {
-            return mCurrencies.size();
+            return mDataList.size();
+        }
+
+        public void setDataList(List<CurrencyData> dataList) {
+            mDataList = dataList;
+            notifyDataSetChanged();
         }
     }
 
