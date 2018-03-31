@@ -70,6 +70,7 @@ public class DetailScreenActivity extends AppCompatActivity {
         switch(item.getItemId()) {
             case R.id.action_notification:
                 Intent intent = new Intent(this, ICONotification.class);
+//                intent.putExtra("id", id);
                 this.startActivity(intent);
                 break;
             case android.R.id.home:
