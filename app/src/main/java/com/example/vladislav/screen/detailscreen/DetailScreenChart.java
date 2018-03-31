@@ -1,7 +1,11 @@
 package com.example.vladislav.screen.detailscreen;
 
 import android.graphics.Color;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
+import com.example.vladislav.data.CurrencyData;
 import com.example.vladislav.data.api.CryptoCompareApi;
 import com.example.vladislav.data.api.models.CurrencyDataModel;
 import com.example.vladislav.data.repository.CryptoRepository;
@@ -30,22 +34,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by vladislav on 24.03.2018.
  */
 
-public class DetailScreenChart {
-
-    private final String BASE_URL = "https://min-api.cryptocompare.com/";
-    private final String USD = "USD";
+public class DetailScreenChart extends AppCompatActivity implements CryptoRepository.GetDataCallback, CryptoRepository.RefreshCallback {
 
     private LineChart mChart;
     private String currencyName;
-    private CryptoCompareApi api;
 
     private final CryptoRepository mRepository = MainRepository.getInstance();
 
     public DetailScreenChart(LineChart mChart, String currencyName) {
         this.mChart = mChart;
         this.currencyName = currencyName;
-
-        setApi();
     }
 
     public void initialize() {
@@ -71,14 +69,6 @@ public class DetailScreenChart {
         yAxisLeft.setTextColor(Color.WHITE);
         yAxisLeft.setDrawGridLines(true);
         yAxisLeft.setDrawAxisLine(true);
-    }
-
-    private void setApi() {
-        api = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(CryptoCompareApi.class);
     }
 
     private LineDataSet createSet() {
@@ -110,25 +100,26 @@ public class DetailScreenChart {
         data.addEntry(new Entry(data.getDataSetByIndex(0).getEntryCount(), yValue), 0);
         data.notifyDataChanged();
         mChart.notifyDataSetChanged();
-        mChart.setVisibleXRangeMaximum(5);
+        mChart.setVisibleXRangeMaximum(3);
         mChart.moveViewToX(data.getEntryCount());
     }
 
     public void updateChart() {
-        api.getCurrencyData(currencyName, USD).enqueue(new Callback<CurrencyDataModel.Response>() {
-            @Override
-            public void onResponse(Call<CurrencyDataModel.Response> call, Response<CurrencyDataModel.Response> response) {
-                CurrencyDataModel data = response.body().getData().get(currencyName).get(USD);
+        mRepository.getCurrencyData(currencyName, this);
+    }
 
-                addEntry(Float.parseFloat(data.getPRICE()));
-            }
+    public void updateRepository() {
+        mRepository.updateCurrencyData(currencyName, this);
+    }
 
-            @Override
-            public void onFailure(Call<CurrencyDataModel.Response> call, Throwable t) {
+    @Override
+    public void onData(@Nullable CurrencyData data) {
+        addEntry(data.getPrice());
+    }
 
-            }
-        });
-
+    @Override
+    public void notify(boolean successful) {
+//        TODO: implements method
     }
 
     class XAxisValueFormatter implements IAxisValueFormatter {
