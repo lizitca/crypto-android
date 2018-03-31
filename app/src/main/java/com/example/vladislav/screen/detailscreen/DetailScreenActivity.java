@@ -11,13 +11,11 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.vladislav.data.CurrencyData;
 import com.example.vladislav.menu.R;
 import com.github.mikephil.charting.charts.LineChart;
 
 public class DetailScreenActivity extends AppCompatActivity {
-
-    private final String BASE_URL = "https://min-api.cryptocompare.com/";
-    private final String USD = "USD";
 
     private String currencyName;
     private DetailScreenChart mChart;
@@ -32,7 +30,7 @@ public class DetailScreenActivity extends AppCompatActivity {
 //        setSupportActionBar(toolbar);
 
         currencyName = getIntent().getStringExtra("currencyName");
-      setTitle(currencyName);
+        setTitle(currencyName);
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
@@ -92,12 +90,13 @@ public class DetailScreenActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            mChart.updateRepository();
                             mChart.updateChart();
                         }
                     });
 
                     try {
-                        Thread.sleep(10000);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
