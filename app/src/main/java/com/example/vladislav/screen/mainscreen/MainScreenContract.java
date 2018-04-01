@@ -18,9 +18,13 @@ public interface MainScreenContract {
 
         void showInfoToast(String currencyName);
 
-        void showUpdatedInfo();
+        void notifyAdapter();
 
         void showRefreshFailedToast();
+
+        void showRefreshAnimation();
+
+        void hideRefreshAnimation();
     }
 
     interface Presenter extends BasePresenter {
@@ -34,5 +38,7 @@ public interface MainScreenContract {
         void onPriceSortSelected();
 
         void onChangeSortSelected();
+
+        void onDestroy();
     }
 }

@@ -9,6 +9,8 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
+
 /**
  * Created by d3m1d0v on 22.03.2018.
  */
@@ -16,11 +18,19 @@ import java.util.List;
 @Dao
 public interface CurrencyDataDao {
 
+    @Deprecated
     @Query("SELECT * FROM currencies")
     List<CurrencyData> getCurrenciesData();
 
+    @Deprecated
     @Query("SELECT * FROM currencies WHERE name = :name")
     CurrencyData getCurrencyDataByName(String name);
+
+    @Query("SELECT * FROM currencies")
+    Flowable<List<CurrencyData>> getCurrencyDataAll_Rx();
+
+    @Query("SELECT * FROM currencies WHERE name = :name LIMIT 1")
+    Flowable<CurrencyData> getCurrencyDataByName_Rx(String name);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertCurrencyData(CurrencyData data);

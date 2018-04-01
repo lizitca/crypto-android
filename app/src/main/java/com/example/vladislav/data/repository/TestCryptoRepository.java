@@ -13,7 +13,7 @@ import java.util.Random;
  * Created by d3m1d0v on 04.03.2018.
  */
 
-public class TestCryptoRepository implements CryptoRepository {
+public abstract class TestCryptoRepository implements CryptoRepository {
 
     private static TestCryptoRepository INSTANCE;
 
@@ -25,7 +25,7 @@ public class TestCryptoRepository implements CryptoRepository {
 
     public static TestCryptoRepository getInstance() {
         if (INSTANCE == null){
-            INSTANCE = new TestCryptoRepository();
+//            INSTANCE = new TestCryptoRepository();
         }
         return INSTANCE;
     }

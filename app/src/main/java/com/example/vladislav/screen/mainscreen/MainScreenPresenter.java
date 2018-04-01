@@ -1,7 +1,9 @@
 package com.example.vladislav.screen.mainscreen;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.example.vladislav.app.Constant;
 import com.example.vladislav.data.repository.CryptoRepository;
 import com.example.vladislav.data.CurrencyData;
 
@@ -10,16 +12,23 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+
+
 /**
  * Created by d3m1d0v on 04.03.2018.
  */
 
-public class MainScreenPresenter implements MainScreenContract.Presenter,
-        CryptoRepository.RefreshCallback, CryptoRepository.GetDataListCallback {
+public class MainScreenPresenter implements MainScreenContract.Presenter {
 
     private final MainScreenContract.View mView;
     private final CryptoRepository mRepository;
     private List<CurrencyData> mDataList;
+
+    private CompositeDisposable mDisposables = new CompositeDisposable();
 
     private CurrencySortType mSortType = CurrencySortType.getDefault();
 
@@ -36,10 +45,26 @@ public class MainScreenPresenter implements MainScreenContract.Presenter,
         mView.showInfoToast(currencyName);
     }
 
-
     @Override
     public void onRefreshRequested() {
-        mRepository.updateCurrenciesData(this);
+        mView.showRefreshAnimation();
+        mDisposables.add(
+                mRepository.refreshCurrencyDataAll_Rx()
+                        .toCompletable()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                onRefreshSuccessful();
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                Log.d(Constant.TAG, "Refresh failed", throwable);
+                                onRefreshFailed();
+                            }
+                        })
+        );
     }
 
     @Override
@@ -58,15 +83,35 @@ public class MainScreenPresenter implements MainScreenContract.Presenter,
     }
 
     @Override
+    public void onDestroy() {
+            mDisposables.dispose();
+    }
+
+    @Override
     public void start() {
         mView.showCurrenciesData(mDataList);
-        mRepository.getCurrenciesDataList(this);
+        mDisposables.add(
+                mRepository.getCurrencyDataListFromDb_Rx()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Consumer<List<CurrencyData>>() {
+                            @Override
+                            public void accept(List<CurrencyData> dataList) throws Exception {
+                                mDataList.clear();
+                                mDataList.addAll(dataList);
+                                sortDataList();
+                                mView.notifyAdapter();
+                                Log.d(Constant.TAG, "Presenter. dataList.size() = " + dataList.size());
+                            }
+                        })
+                );
+
+        onRefreshRequested();
     }
 
     private void updateSortType(CurrencySortType sortType) {
         mSortType = sortType;
         sortDataList();
-        mView.showUpdatedInfo();
+        mView.notifyAdapter();
     }
 
     private void sortDataList() {
@@ -88,27 +133,12 @@ public class MainScreenPresenter implements MainScreenContract.Presenter,
         });
     }
 
-
-    /**
-     * {@link CryptoRepository.GetDataListCallback} implementation
-     */
-    @Override
-    public void onData(@NonNull List<CurrencyData> dataList) {
-        mDataList.clear();
-        mDataList.addAll(dataList);
-        sortDataList();
-        mView.showUpdatedInfo();
+    private void onRefreshSuccessful() {
+        mView.hideRefreshAnimation();
     }
 
-    /**
-     * {@link CryptoRepository.RefreshCallback} implementation
-     */
-    @Override
-    public void notify(boolean successful) {
-        if (successful) {
-            mRepository.getCurrenciesDataList(this);
-        } else {
-            mView.showRefreshFailedToast();
-        }
+    private void onRefreshFailed() {
+        mView.hideRefreshAnimation();
+        mView.showRefreshFailedToast();
     }
 }

@@ -18,10 +18,16 @@ import java.util.TreeMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -53,6 +59,7 @@ public class MainRepository implements CryptoRepository {
         api = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
                 .create(CryptoCompareApi.class);
 
@@ -214,7 +221,8 @@ public class MainRepository implements CryptoRepository {
         });
     }
 
-    private static CurrencyData DataModelToData(CurrencyDataModel dataModel) {
+    @NonNull
+    private static CurrencyData DataModelToData(@NonNull CurrencyDataModel dataModel) {
         return new CurrencyData(
                 dataModel.getFROMSYMBOL(),
                 Float.parseFloat(dataModel.getPRICE()),
@@ -224,5 +232,68 @@ public class MainRepository implements CryptoRepository {
                 dataModel.getVOLUME24HOURTO(),
                 dataModel.getLASTUPDATE()
         );
+    }
+
+
+    ///////////////////////////////
+    /// Using reactive behavior ///
+    ///////////////////////////////
+
+    @Override
+    public Flowable<List<CurrencyData>> getCurrencyDataListFromDb_Rx() {
+        return db.currencyDataDao().getCurrencyDataAll_Rx();
+    }
+
+    @Override
+    public Single<List<CurrencyData>> refreshCurrencyDataAll_Rx() {
+        return api.getCurrencyDataRx(FSYMS, USD)
+                .subscribeOn(Schedulers.io())
+                .map(new Function<CurrencyDataModel.Response, List<CurrencyData>>() {
+                    @Override
+                    public List<CurrencyData> apply(CurrencyDataModel.Response res) throws Exception {
+                        if (res.getData() == null) {
+                            throw new Exception("Response body is null");
+                        }
+
+                        List<CurrencyData> dataList = new ArrayList<>();
+                        for (Map<String, CurrencyDataModel> map : res.getData().values()) {
+                            dataList.add(DataModelToData(map.get(USD)));
+                        }
+                        return dataList;
+                    }
+                })
+                .doOnSuccess(new Consumer<List<CurrencyData>>() {
+                    @Override
+                    public void accept(List<CurrencyData> dataList) throws Exception {
+                        db.currencyDataDao().insertCurrenciesData(dataList);
+                    }
+                });
+    }
+
+    @Override
+    public Flowable<CurrencyData> getCurrencyDataFromDb_Rx(@NonNull String currencyName) {
+        return db.currencyDataDao().getCurrencyDataByName_Rx(currencyName);
+    }
+
+    @Override
+    public Single<CurrencyData> refreshCurrencyData_Rx(@NonNull final String currencyName) {
+        return api.getCurrencyDataRx(currencyName, USD)
+                .subscribeOn(Schedulers.io())
+                .map(new Function<CurrencyDataModel.Response, CurrencyData>() {
+                    @Override
+                    public CurrencyData apply(CurrencyDataModel.Response res) throws Exception {
+                        if (res.getData() == null) {
+                            throw new Exception("Response body is null");
+                        }
+
+                        return DataModelToData(res.getData().get(currencyName).get(USD));
+                    }
+                })
+                .doOnSuccess(new Consumer<CurrencyData>() {
+                    @Override
+                    public void accept(CurrencyData data) throws Exception {
+                        db.currencyDataDao().insertCurrencyData(data);
+                    }
+                });
     }
 }
