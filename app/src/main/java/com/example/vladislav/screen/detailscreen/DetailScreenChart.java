@@ -34,12 +34,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by vladislav on 24.03.2018.
  */
 
-public class DetailScreenChart extends AppCompatActivity implements CryptoRepository.GetDataCallback, CryptoRepository.RefreshCallback {
+public class DetailScreenChart {
 
     private LineChart mChart;
     private String currencyName;
-
-    private final CryptoRepository mRepository = MainRepository.getInstance();
 
     public DetailScreenChart(LineChart mChart, String currencyName) {
         this.mChart = mChart;
@@ -87,7 +85,7 @@ public class DetailScreenChart extends AppCompatActivity implements CryptoReposi
         return set;
     }
 
-    private void addEntry(float yValue) {
+    public void addEntry(float yValue) {
         LineData data = mChart.getData();
 
         ILineDataSet set = data.getDataSetByIndex(0);
@@ -102,24 +100,6 @@ public class DetailScreenChart extends AppCompatActivity implements CryptoReposi
         mChart.notifyDataSetChanged();
         mChart.setVisibleXRangeMaximum(3);
         mChart.moveViewToX(data.getEntryCount());
-    }
-
-    public void updateChart() {
-        mRepository.getCurrencyData(currencyName, this);
-    }
-
-    public void updateRepository() {
-        mRepository.updateCurrencyData(currencyName, this);
-    }
-
-    @Override
-    public void onData(@Nullable CurrencyData data) {
-        addEntry(data.getPrice());
-    }
-
-    @Override
-    public void notify(boolean successful) {
-//        TODO: implements method
     }
 
     class XAxisValueFormatter implements IAxisValueFormatter {
