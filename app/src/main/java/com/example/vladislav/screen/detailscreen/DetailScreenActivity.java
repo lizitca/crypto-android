@@ -23,6 +23,7 @@ public class DetailScreenActivity extends AppCompatActivity implements CryptoRep
 
     private String currencyName;
     private DetailScreenChart mChart;
+    private CurrencyData currentCurrency;
 
     private final CryptoRepository mRepository = MainRepository.getInstance();
 
@@ -114,7 +115,10 @@ public class DetailScreenActivity extends AppCompatActivity implements CryptoRep
 
     @Override
     public void onData(@Nullable CurrencyData data) {
-        mChart.addEntry(data.getPrice());
+        currentCurrency = data;
+
+        updateViewChart();
+        updateViewFields();
     }
 
     @Override
@@ -122,11 +126,19 @@ public class DetailScreenActivity extends AppCompatActivity implements CryptoRep
         // TODO: implements method // зачем?
     }
 
-    public void updateChart() {
+    private void updateChart() {
         mRepository.getCurrencyData(currencyName, this);
     }
 
-    public void updateRepository() {
+    private void updateRepository() {
         mRepository.updateCurrencyData(currencyName, this);
+    }
+
+    private void updateViewChart() {
+        mChart.addEntry(currentCurrency.getPrice());
+    }
+
+    private void updateViewFields() {
+        // .. butter knife и вперед
     }
 }
