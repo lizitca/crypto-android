@@ -14,6 +14,7 @@ import android.widget.ListView;
 
 import com.example.vladislav.data.CurrencyData;
 import com.example.vladislav.data.repository.CryptoRepository;
+import com.example.vladislav.screen.notificationscreen.ICONotificationActivity;
 import com.example.vladislav.menu.R;
 import com.github.mikephil.charting.charts.LineChart;
 
@@ -74,7 +75,7 @@ public class DetailScreenActivity extends AppCompatActivity implements CryptoRep
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.action_notification:
-                Intent intent = new Intent(this, ICONotification.class);
+                Intent intent = new Intent(this, ICONotificationActivity.class);
 //                intent.putExtra("id", id);
                 this.startActivity(intent);
                 break;
