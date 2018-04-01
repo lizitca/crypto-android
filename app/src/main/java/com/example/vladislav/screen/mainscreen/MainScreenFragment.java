@@ -15,12 +15,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.vladislav.data.CryptoDatabase;
 import com.example.vladislav.data.CurrencyData;
 import com.example.vladislav.data.repository.MainRepository;
 import com.example.vladislav.menu.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -88,6 +86,12 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.onDestroy();
+    }
+
+    @Override
     public void showCurrenciesData(List<CurrencyData> currencies) {
         if (mAdapter == null) {
             mAdapter = new CryptoCurrencyAdapter(currencies);
@@ -103,15 +107,23 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
     }
 
     @Override
-    public void showUpdatedInfo() {
+    public void notifyAdapter() {
         mAdapter.notifyDataSetChanged();
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void showRefreshFailedToast() {
-        mSwipeRefreshLayout.setRefreshing(false);
         Toast.makeText(this.getContext(), "Refresh failed =(", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showRefreshAnimation() {
+        mSwipeRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void hideRefreshAnimation() {
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
