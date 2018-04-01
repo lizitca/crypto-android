@@ -1,4 +1,4 @@
-package com.example.vladislav.screen.detailscreen;
+package com.example.vladislav.screen.notificationscreen;
 
 import android.support.annotation.IdRes;
 import android.support.v7.app.ActionBar;
@@ -14,7 +14,7 @@ import com.example.vladislav.menu.R;
 
 import java.text.DecimalFormat;
 
-public class ICONotification extends AppCompatActivity {
+public class ICONotificationActivity extends AppCompatActivity {
 private double cash = 7000;
 
     @Override

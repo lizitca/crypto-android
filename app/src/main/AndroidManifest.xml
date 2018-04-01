@@ -28,7 +28,7 @@
         <activity
             android:name="com.example.vladislav.screen.detailscreen.DetailScreenActivity"
             android:label="@string/title_activity_detail_screen" />
-        <activity android:name="com.example.vladislav.screen.detailscreen.ICONotification"></activity>
+        <activity android:name="com.example.vladislav.screen.notificationscreen.ICONotificationActivity"></activity>
 
         <service
             android:name="com.example.vladislav.service.TestFirebaseMessagingService">

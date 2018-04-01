@@ -2,6 +2,7 @@ package com.example.vladislav.screen.detailscreen;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,13 +13,20 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.vladislav.data.CurrencyData;
+import com.example.vladislav.data.repository.CryptoRepository;
+import com.example.vladislav.screen.notificationscreen.ICONotificationActivity;
 import com.example.vladislav.menu.R;
 import com.github.mikephil.charting.charts.LineChart;
 
-public class DetailScreenActivity extends AppCompatActivity {
+import com.example.vladislav.data.repository.MainRepository;
+
+public class DetailScreenActivity extends AppCompatActivity implements CryptoRepository.GetDataCallback, CryptoRepository.RefreshCallback {
 
     private String currencyName;
     private DetailScreenChart mChart;
+    private CurrencyData currentCurrency;
+
+    private final CryptoRepository mRepository = MainRepository.getInstance();
 
     String[] values = { "Капитализация 100.000.000.000$", "Выпущено 111.111.111 BTC", "Объем(24ч) 10.000.000$" };
     @Override
@@ -67,7 +75,7 @@ public class DetailScreenActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.action_notification:
-                Intent intent = new Intent(this, ICONotification.class);
+                Intent intent = new Intent(this, ICONotificationActivity.class);
 //                intent.putExtra("id", id);
                 this.startActivity(intent);
                 break;
@@ -91,8 +99,8 @@ public class DetailScreenActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mChart.updateRepository();
-                            mChart.updateChart();
+                            updateRepository();
+                            updateChart();
                         }
                     });
 
@@ -104,5 +112,34 @@ public class DetailScreenActivity extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    @Override
+    public void onData(@Nullable CurrencyData data) {
+        currentCurrency = data;
+
+        updateViewChart();
+        updateViewFields();
+    }
+
+    @Override
+    public void notify(boolean successful) {
+        // TODO: implements method // зачем?
+    }
+
+    private void updateChart() {
+        mRepository.getCurrencyData(currencyName, this);
+    }
+
+    private void updateRepository() {
+        mRepository.updateCurrencyData(currencyName, this);
+    }
+
+    private void updateViewChart() {
+        mChart.addEntry(currentCurrency.getPrice());
+    }
+
+    private void updateViewFields() {
+        // .. butter knife и вперед
     }
 }
