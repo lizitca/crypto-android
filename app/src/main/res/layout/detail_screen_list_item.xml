@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/currency_item"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:layout_margin="5dp">
+
+
+    <TextView
+        android:id="@+id/detail_list_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:paddingTop="7dp"
+        android:paddingLeft="10dp"
+        android:text="CryptoName"
+        android:textSize="20sp"
+        android:textColor="@color/currency_item_value"/>
+
+    <TextView
+        android:id="@+id/detail_list_val"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:paddingTop="9dp"
+        android:paddingRight="10dp"
+        android:textSize="20sp"/>
+
+</RelativeLayout>
