@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.vladislav.app.Constant;
 import com.example.vladislav.data.CurrencyData;
 import com.example.vladislav.data.repository.CryptoRepository;
 import com.example.vladislav.screen.notificationscreen.ICONotificationActivity;
@@ -21,6 +23,9 @@ import com.github.mikephil.charting.charts.LineChart;
 
 import com.example.vladislav.data.repository.MainRepository;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class DetailScreenActivity extends AppCompatActivity implements CryptoRepository.GetDataCallback, CryptoRepository.RefreshCallback {
 
     private String currencyName;
@@ -28,6 +33,8 @@ public class DetailScreenActivity extends AppCompatActivity implements CryptoRep
     private CurrencyData currentCurrency;
 
     private final CryptoRepository mRepository = MainRepository.getInstance();
+    private Timer mTimer;
+    private UpdateChart mUpdateChart;
 
     String[] values = { "Капитализация 100.000.000.000$", "Выпущено 111.111.111 BTC", "Объем(24ч) 10.000.000$" };
     @Override
@@ -55,8 +62,15 @@ public class DetailScreenActivity extends AppCompatActivity implements CryptoRep
 
         lvMain.setAdapter(adapter);
 
-    }
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
 
+        mTimer = new Timer();
+        mUpdateChart = new UpdateChart();
+
+        mTimer.schedule(mUpdateChart, 0, 1000);
+    }
 
     @Override
     public boolean onSupportNavigateUp(){
@@ -90,28 +104,9 @@ public class DetailScreenActivity extends AppCompatActivity implements CryptoRep
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateRepository();
-                        }
-                    });
-
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
+    protected void onDestroy() {
+        super.onDestroy();
+        mTimer.cancel();
     }
 
     @Override
@@ -146,5 +141,13 @@ public class DetailScreenActivity extends AppCompatActivity implements CryptoRep
 
     private void updateViewFields() {
         // .. butter knife и вперед
+    }
+
+    class UpdateChart extends TimerTask {
+        @Override
+        public void run() {
+            updateRepository();
+//            Log.d(Constant.TAG, "Timer tick");
+        }
     }
 }
