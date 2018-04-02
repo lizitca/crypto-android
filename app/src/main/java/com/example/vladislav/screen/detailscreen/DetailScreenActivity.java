@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.vladislav.data.CurrencyData;
 import com.example.vladislav.data.repository.CryptoRepository;
@@ -100,7 +101,6 @@ public class DetailScreenActivity extends AppCompatActivity implements CryptoRep
                         @Override
                         public void run() {
                             updateRepository();
-                            updateChart();
                         }
                     });
 
@@ -116,15 +116,20 @@ public class DetailScreenActivity extends AppCompatActivity implements CryptoRep
 
     @Override
     public void onData(@Nullable CurrencyData data) {
-        currentCurrency = data;
-
-        updateViewChart();
-        updateViewFields();
+        if (currentCurrency == null || !currentCurrency.getLastUpdate().equals(data.getLastUpdate())) {
+            currentCurrency = data;
+            updateViewChart();
+            updateViewFields();
+        }
     }
 
     @Override
     public void notify(boolean successful) {
-        // TODO: implements method // зачем?
+        if (successful) {
+            updateChart();
+        } else {
+            Toast.makeText(this, "Refresh failed", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void updateChart() {

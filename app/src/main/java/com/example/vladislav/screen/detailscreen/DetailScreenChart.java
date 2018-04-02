@@ -74,13 +74,11 @@ public class DetailScreenChart {
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
         set.setColor(Color.CYAN);
         set.setFillColor(Color.CYAN);
-        set.setCircleColor(Color.rgb(59,127,237));
-        set.setValueTextSize(10f);
+        set.setDrawCircles(false);
+        set.setDrawValues(false);
         set.setLineWidth(2f);
-        set.setCircleSize(4f);
         set.setFillAlpha(65);
         set.setDrawFilled(true);
-        set.setValueFormatter(new ValueFormatter());
 
         return set;
     }
@@ -98,7 +96,6 @@ public class DetailScreenChart {
         data.addEntry(new Entry(data.getDataSetByIndex(0).getEntryCount(), yValue), 0);
         data.notifyDataChanged();
         mChart.notifyDataSetChanged();
-        mChart.setVisibleXRangeMaximum(3);
         mChart.moveViewToX(data.getEntryCount());
     }
 
@@ -126,7 +123,7 @@ public class DetailScreenChart {
 
         @Override
         public String getFormattedValue(float value, AxisBase axis) {
-            return mFormat.format(value) + " $";
+            return "$" + mFormat.format(value);
         }
     }
 
