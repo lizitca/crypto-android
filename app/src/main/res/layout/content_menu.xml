@@ -6,12 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.vladislav.menu.MenuActivity"
+    tools:context="com.example.vladislav.screen.menu.MenuActivity"
     tools:showIn="@layout/app_bar_menu">
 
     <FrameLayout
         android:id="@+id/screen_area"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

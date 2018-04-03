@@ -6,6 +6,7 @@
     android:layout_margin="5dp"
     android:background="@drawable/krugliye_ugli">
 
+
     <TextView
         android:id="@+id/currency_title"
         android:layout_width="wrap_content"

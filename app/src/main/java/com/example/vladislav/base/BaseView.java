@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.vladislav;
+package com.example.vladislav.base;
 
 public interface BaseView<T> {
 

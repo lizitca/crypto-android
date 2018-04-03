@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#00796b</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimaryDark">#015349</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorWhite">#ffffff</color>
     <color name="background">#b2dfdb</color>
 
     <!-- Currency item colors -->
-    <color name="currency_item_background">#cdeae8</color>
+    <color name="currency_item_background">#d0eae9</color>
     <color name="currency_item_title">#00796b</color>
     <color name="currency_item_value">#000000</color>
     <color name="currency_item_change_positiv">#085a02</color>
     <color name="currency_item_change_negative">#5a021d</color>
     <color name="currency_item_change_non">#585c58</color>
+
+    <!--menu color-->
+    <color name="background_menu">#009688</color>
+
+    <!--chart color-->
+    <color name="color_background_chart">#087d7f</color>
+    <color name="color_chart">#06a18f</color>
+    <color name="color_value">#00FFFF</color>
+    <color name="color_circle">#3b7fed</color>
+
+    <color name="color_down">#f00</color>
+    <color name="color_up">#0f0</color>
 </resources>
