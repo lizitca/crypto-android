@@ -227,6 +227,8 @@ public class MainRepository implements CryptoRepository {
                 dataModel.getFROMSYMBOL(),
                 Float.parseFloat(dataModel.getPRICE()),
                 Float.parseFloat(dataModel.getCHANGEPCT24HOUR()),
+                Float.parseFloat(dataModel.getCHANGEPCT24HOUR()),
+                Float.parseFloat(dataModel.getCHANGEPCTDAY()),
                 dataModel.getSUPPLY(),
                 dataModel.getMKTCAP(),
                 dataModel.getVOLUME24HOURTO(),

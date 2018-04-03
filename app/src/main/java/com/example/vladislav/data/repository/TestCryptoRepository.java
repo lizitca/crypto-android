@@ -44,6 +44,8 @@ public abstract class TestCryptoRepository implements CryptoRepository {
                     name,
                     genPriceValue(),
                     genChangeValue(),
+                    genChangeValue(),
+                    genChangeValue(),
                     "0",
                     "0",
                     "0",

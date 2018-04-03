@@ -14,8 +14,13 @@ import com.example.vladislav.menu.R;
 
 import java.text.DecimalFormat;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ICONotificationActivity extends AppCompatActivity {
-private double cash = 7000;
+    @BindView(R.id.textView2) TextView cryptoNameText;
+    @BindView(R.id.textView3) TextView cryptoValueText;
+    private float cash = 7000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +30,12 @@ private double cash = 7000;
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        ButterKnife.bind(this);
+
+        cash = getIntent().getFloatExtra("price", 0);
+        String name = getIntent().getStringExtra("name");
+        cryptoNameText.setText(name);
+        cryptoValueText.setText(String.format("%,.2f $", cash));
 
         setTitle("Уведомление");
         customSeekBar(R.id.priceplus, R.id.seekBar1, R.id.minus1, R.id.plus1, 0);

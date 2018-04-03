@@ -25,4 +25,10 @@
 
     <string name="title_activity_detail_screen">DetailScreenActivity</string>
     <string name="title_activity_notification">Notification</string>
+
+    <string-array name="details_fields">
+        <item>Капитализация</item>
+        <item>Выпущено</item>
+        <item>Объем(24 ч)</item>
+    </string-array>
 </resources>
