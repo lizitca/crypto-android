@@ -42,7 +42,7 @@ public class MainScreenPresenter implements MainScreenContract.Presenter {
 
     @Override
     public void onCurrencyItemClick(String currencyName) {
-        mView.showInfoToast(currencyName);
+//        mView.showInfoToast(currencyName);
     }
 
     @Override
