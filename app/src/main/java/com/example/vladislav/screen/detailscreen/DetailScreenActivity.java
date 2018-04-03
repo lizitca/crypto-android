@@ -121,13 +121,13 @@ public class DetailScreenActivity extends AppCompatActivity implements CryptoRep
         switch(item.getItemId()) {
             case R.id.action_notification:
                 Intent intent = new Intent(this, ICONotificationActivity.class);
-//                intent.putExtra("id", id);
+                intent.putExtra("price", currentCurrency.getPrice());
+                intent.putExtra("name", currentCurrency.getName());
                 this.startActivity(intent);
                 break;
             case android.R.id.home:
                 finish();
                 return true;
-
         }
 
         return true;
