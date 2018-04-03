@@ -45,8 +45,8 @@ dependencies {
     // https://mvnrepository.com/artifact/android.arch.persistence.room/rxjava2
     compile group: 'android.arch.persistence.room', name: 'rxjava2', version: '1.0.0'
 
-    implementation 'com.jakewharton:butterknife:8.8.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    //implementation 'com.jakewharton:butterknife:8.8.1'
+    //annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

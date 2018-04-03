@@ -36,18 +36,24 @@ import java.util.TimerTask;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.BindViews;
-import butterknife.ButterKnife;
+//import butterknife.BindView;
+//import butterknife.BindViews;
+//import butterknife.ButterKnife;
 
 public class DetailScreenActivity extends AppCompatActivity implements CryptoRepository.GetDataCallback, CryptoRepository.RefreshCallback {
 
-    @BindView(R.id.dollarVal) TextView dolVal;
+    /*@BindView(R.id.dollarVal) TextView dolVal;
     @BindView(R.id.rublVal) TextView rublVal;
     @BindView(R.id.changeHours1Val) TextView change1Hval;
     @BindView(R.id.changeHours24Val) TextView change24Hval;
     @BindView(R.id.changeDays7) TextView change7Dval;
-    @BindView(R.id.lvData) ListView lvMain;
+    @BindView(R.id.lvData) ListView lvMain;*/
+    TextView dolVal;
+    TextView rublVal;
+    TextView change1Hval;
+    TextView change24Hval;
+    TextView change7Dval;
+    ListView lvMain;
 
 
     private String currencyName;
@@ -68,8 +74,13 @@ public class DetailScreenActivity extends AppCompatActivity implements CryptoRep
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_screen);
-        ButterKnife.bind(this);
-
+        //ButterKnife.bind(this);
+        dolVal = (TextView ) findViewById(R.id.dollarVal);
+        rublVal  = (TextView ) findViewById(R.id.rublVal);
+        change1Hval = (TextView ) findViewById(R.id.changeHours1Val);
+        change24Hval  = (TextView) findViewById(R.id.changeHours24Val);
+        change7Dval   = (TextView) findViewById(R.id.changeDays7);
+        lvMain = (ListView) findViewById(R.id.lvData);
 //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 

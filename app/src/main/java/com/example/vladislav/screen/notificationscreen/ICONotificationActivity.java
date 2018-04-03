@@ -14,12 +14,14 @@ import com.example.vladislav.menu.R;
 
 import java.text.DecimalFormat;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+//import butterknife.BindView;
+//import butterknife.ButterKnife;
 
 public class ICONotificationActivity extends AppCompatActivity {
-    @BindView(R.id.textView2) TextView cryptoNameText;
-    @BindView(R.id.textView3) TextView cryptoValueText;
+    /*@BindView(R.id.textView2) TextView cryptoNameText;
+    @BindView(R.id.textView3) TextView cryptoValueText;*/
+    TextView cryptoNameText;
+    TextView cryptoValueText;
     private float cash = 7000;
 
     @Override
@@ -30,7 +32,9 @@ public class ICONotificationActivity extends AppCompatActivity {
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        ButterKnife.bind(this);
+        //ButterKnife.bind(this);
+        cryptoNameText = (TextView) findViewById(R.id.textView2);
+        cryptoValueText = (TextView) findViewById(R.id.textView3);
 
         cash = getIntent().getFloatExtra("price", 0);
         String name = getIntent().getStringExtra("name");
