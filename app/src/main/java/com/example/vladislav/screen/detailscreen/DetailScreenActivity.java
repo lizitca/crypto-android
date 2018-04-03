@@ -1,16 +1,22 @@
 package com.example.vladislav.screen.detailscreen;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -27,6 +33,7 @@ import com.example.vladislav.data.repository.MainRepository;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -40,17 +47,23 @@ public class DetailScreenActivity extends AppCompatActivity implements CryptoRep
     @BindView(R.id.changeHours1Val) TextView change1Hval;
     @BindView(R.id.changeHours24Val) TextView change24Hval;
     @BindView(R.id.changeDays7) TextView change7Dval;
+    @BindView(R.id.lvData) ListView lvMain;
 
 
     private String currencyName;
     private DetailScreenChart mChart;
     private CurrencyData currentCurrency;
+    private MyArrayAdapter adapter;
 
     private final CryptoRepository mRepository = MainRepository.getInstance();
+
     private Timer mTimer;
     private UpdateChart mUpdateChart;
 
-    String[] values = { "Капитализация 100.000.000.000$", "Выпущено 111.111.111 BTC", "Объем(24ч) 10.000.000$" };
+    private final ArrayList<Pair<String, String>> dataFields = new ArrayList<>();
+
+
+    String[] fieldValues;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,10 +83,12 @@ public class DetailScreenActivity extends AppCompatActivity implements CryptoRep
         mChart = new DetailScreenChart((LineChart) findViewById(R.id.chart), currencyName);
         mChart.initialize();
 
-        ListView lvMain = (ListView) findViewById(R.id.lvData);
+        fieldValues = getResources().getStringArray(R.array.details_fields);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, values);
+        dataFields.add(new Pair<>(fieldValues[0], "0"));
+        dataFields.add(new Pair<>(fieldValues[1], "0"));
+        dataFields.add(new Pair<>(fieldValues[2], "0"));
+        adapter = new MyArrayAdapter(this, dataFields);
 
         lvMain.setAdapter(adapter);
 
@@ -182,6 +197,36 @@ public class DetailScreenActivity extends AppCompatActivity implements CryptoRep
 
         change7Dval.setText(String.format(Locale.getDefault(), "%+.3f%% %s", currentCurrency.getChange7D(), tmp));
         change7Dval.setTextColor(tmpClr);
+
+        dataFields.set(0, new Pair<String, String>(fieldValues[0],  currentCurrency.getCapitalization()));
+        dataFields.set(1, new Pair<String, String>(fieldValues[1], currentCurrency.getSupply()));
+        dataFields.set(2, new Pair<String, String>(fieldValues[2], currentCurrency.getVolume24H()));
+
+        adapter.notifyDataSetChanged();
+    }
+
+    public class MyArrayAdapter extends ArrayAdapter<Pair<String, String>> {
+        private final Context context;
+        private final ArrayList<Pair<String, String>> values;
+
+        public MyArrayAdapter(Context context, ArrayList<Pair<String, String>> values) {
+            super(context, R.layout.detail_screen_list_item, values);
+            this.context = context;
+            this.values = values;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View rowView = inflater.inflate(R.layout.detail_screen_list_item, parent, false);
+            TextView titleText = (TextView) rowView.findViewById(R.id.detail_list_title);
+            TextView valText = (TextView) rowView.findViewById(R.id.detail_list_val);
+            titleText.setText(values.get(position).first);
+            valText.setText(values.get(position).second);
+
+            return rowView;
+        }
     }
 
     class UpdateChart extends TimerTask {
