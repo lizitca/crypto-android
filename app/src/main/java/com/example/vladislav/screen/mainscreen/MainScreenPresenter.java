@@ -28,6 +28,8 @@ public class MainScreenPresenter implements MainScreenContract.Presenter {
     private final CryptoRepository mRepository;
     private List<CurrencyData> mDataList;
 
+    private boolean isFirstStart = true;
+
     private CompositeDisposable mDisposables = new CompositeDisposable();
 
     private CurrencySortType mSortType = CurrencySortType.getDefault();
@@ -36,13 +38,12 @@ public class MainScreenPresenter implements MainScreenContract.Presenter {
         mView = view;
         mRepository = repository;
         mDataList = new ArrayList<>();
-
         mView.setPresenter(this);
     }
 
     @Override
-    public void onCurrencyItemClick(String currencyName) {
-//        mView.showInfoToast(currencyName);
+    public void onCurrencyItemClick(CurrencyData currency) {
+        mView.startDetailActivity(currency);
     }
 
     @Override
@@ -90,22 +91,23 @@ public class MainScreenPresenter implements MainScreenContract.Presenter {
     @Override
     public void start() {
         mView.showCurrenciesData(mDataList);
-        mDisposables.add(
-                mRepository.getCurrencyDataListFromDb_Rx()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Consumer<List<CurrencyData>>() {
-                            @Override
-                            public void accept(List<CurrencyData> dataList) throws Exception {
-                                mDataList.clear();
-                                mDataList.addAll(dataList);
-                                sortDataList();
-                                mView.notifyAdapter();
-                                Log.d(Constant.TAG, "Presenter. dataList.size() = " + dataList.size());
-                            }
-                        })
-                );
-
-        onRefreshRequested();
+        if (isFirstStart) {
+            isFirstStart = false;
+            mDisposables.add(
+                    mRepository.getCurrencyDataListFromDb_Rx()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Consumer<List<CurrencyData>>() {
+                                @Override
+                                public void accept(List<CurrencyData> dataList) throws Exception {
+                                    mDataList.clear();
+                                    mDataList.addAll(dataList);
+                                    sortDataList();
+                                    mView.notifyAdapter();
+                                }
+                            })
+            );
+            onRefreshRequested();
+        }
     }
 
     private void updateSortType(CurrencySortType sortType) {

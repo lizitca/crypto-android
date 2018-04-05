@@ -1,5 +1,6 @@
 package com.example.vladislav.screen.mainscreen;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,14 +19,19 @@ import android.widget.Toast;
 import com.example.vladislav.data.CurrencyData;
 import com.example.vladislav.data.repository.MainRepository;
 import com.example.vladislav.menu.R;
+import com.example.vladislav.screen.detailscreen.DetailScreenActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by d3m1d0v on 03.03.2018.
  */
 
-public class MainScreenFragment extends Fragment implements MainScreenContract.View, SwipeRefreshLayout.OnRefreshListener {
+public class MainScreenFragment extends Fragment implements
+        MainScreenContract.View, SwipeRefreshLayout.OnRefreshListener {
+
+    private static final String CURRENCY_NAME = "currencyName";
 
     private MainScreenContract.Presenter mPresenter;
     private RecyclerView mRecyclerView;
@@ -36,7 +42,6 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
         new MainScreenPresenter(this, MainRepository.getInstance());
     }
 
@@ -52,6 +57,9 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
         mSwipeRefreshLayout = view.findViewById(R.id.refresh);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+
+        mAdapter = new CryptoCurrencyAdapter(new ArrayList<CurrencyData>());
+        mRecyclerView.setAdapter(mAdapter);
 
         mPresenter.start();
 
@@ -81,7 +89,6 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
             default:
                 return super.onOptionsItemSelected(item);
         }
-
         return true;
     }
 
@@ -93,17 +100,15 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
 
     @Override
     public void showCurrenciesData(List<CurrencyData> currencies) {
-        if (mAdapter == null) {
-            mAdapter = new CryptoCurrencyAdapter(currencies);
-            mRecyclerView.setAdapter(mAdapter);
-        } else {
             mAdapter.setDataList(currencies);
-        }
     }
 
     @Override
-    public void showInfoToast(String currencyName) {
-        Toast.makeText(this.getContext(), String.format("On %s clicked.", currencyName), Toast.LENGTH_SHORT).show();
+    public void startDetailActivity(CurrencyData currency) {
+        getActivity().startActivity(
+                new Intent(getContext(), DetailScreenActivity.class)
+                        .putExtra(CURRENCY_NAME, currency.getName())
+        );
     }
 
     @Override
@@ -165,10 +170,7 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
 
         @Override
         public void onClick(View v) {
-            MainScreenFragment.this.mPresenter.onCurrencyItemClick(mCurrencyData.getName());
-
-            OnSelectedRelativeLayoutListener listener = (OnSelectedRelativeLayoutListener) getActivity();
-            listener.onSelectedRelativeLayout(mCurrencyData.getName());
+            MainScreenFragment.this.mPresenter.onCurrencyItemClick(mCurrencyData);
         }
 
         public void setCurrencyData(CurrencyData data) {
@@ -226,10 +228,5 @@ public class MainScreenFragment extends Fragment implements MainScreenContract.V
             mDataList = dataList;
             notifyDataSetChanged();
         }
-    }
-
-    public interface OnSelectedRelativeLayoutListener {
-
-        void onSelectedRelativeLayout(String currencyName);
     }
 }

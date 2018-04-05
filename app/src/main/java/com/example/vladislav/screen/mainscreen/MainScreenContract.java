@@ -16,7 +16,7 @@ public interface MainScreenContract {
 
         void showCurrenciesData(List<CurrencyData> dataList);
 
-        void showInfoToast(String currencyName);
+        void startDetailActivity(CurrencyData currency);
 
         void notifyAdapter();
 
@@ -29,7 +29,7 @@ public interface MainScreenContract {
 
     interface Presenter extends BasePresenter {
 
-        void onCurrencyItemClick(String currencyName);
+        void onCurrencyItemClick(CurrencyData currency);
 
         void onRefreshRequested();
 

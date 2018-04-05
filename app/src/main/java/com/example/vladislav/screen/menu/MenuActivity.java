@@ -1,32 +1,27 @@
 package com.example.vladislav.screen.menu;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.vladislav.app.Constant;
 import com.example.vladislav.menu.R;
 import com.example.vladislav.screen.about.FragmentAboutApp;
-import com.example.vladislav.screen.detailscreen.DetailScreenActivity;
 import com.example.vladislav.screen.mainscreen.MainScreenFragment;
 
-public class MenuActivity extends AppCompatActivity
-        implements
-        NavigationView.OnNavigationItemSelectedListener,
-        MenuContract.View,
-        MainScreenFragment.OnSelectedRelativeLayoutListener {
+public class MenuActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener, MenuContract.View {
 
     private MenuContract.Presenter mPresenter;
+    private MainScreenFragment mMainScreenFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,16 +73,27 @@ public class MenuActivity extends AppCompatActivity
 
     @Override
     public void showMainScreen() {
-        replaceFragment(new MainScreenFragment());
-
         setTitle(getResources().getString(R.string.main));
+        if (mMainScreenFragment == null) {
+            mMainScreenFragment = new MainScreenFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.screen_area, mMainScreenFragment)
+                    .commit();
+        } else {
+            getSupportFragmentManager()
+                    .popBackStack();
+        }
     }
 
     @Override
     public void showAboutApp() {
-        replaceFragment(new FragmentAboutApp());
-
         setTitle(getResources().getString(R.string.about_app));
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.screen_area, new FragmentAboutApp())
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
@@ -98,23 +104,5 @@ public class MenuActivity extends AppCompatActivity
     @Override
     public void setPresenter(@NonNull MenuContract.Presenter presenter) {
         mPresenter = presenter;
-    }
-
-    private void replaceFragment(Fragment newFragment) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.screen_area, newFragment);
-        fragmentTransaction.commit();
-    }
-
-    public void setActionBarTitle(String title) {
-        getSupportActionBar().setTitle(title);
-    }
-
-    @Override
-    public void onSelectedRelativeLayout(String currencyName) {
-        Intent intent = new Intent(this, DetailScreenActivity.class);
-        intent.putExtra("currencyName", currencyName);
-        startActivity(intent);
-
     }
 }
