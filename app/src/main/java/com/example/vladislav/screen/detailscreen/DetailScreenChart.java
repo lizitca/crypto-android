@@ -1,17 +1,14 @@
 package com.example.vladislav.screen.detailscreen;
 
+import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import com.example.vladislav.data.CurrencyData;
-import com.example.vladislav.data.api.CryptoCompareApi;
-import com.example.vladislav.data.api.models.CurrencyDataModel;
-import com.example.vladislav.data.repository.CryptoRepository;
-import com.example.vladislav.data.repository.MainRepository;
+import com.example.vladislav.menu.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -19,22 +16,22 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by vladislav on 24.03.2018.
  */
 
-public class DetailScreenChart {
+public class DetailScreenChart extends AppCompatActivity {
 
     private LineChart mChart;
     private String currencyName;
@@ -61,12 +58,13 @@ public class DetailScreenChart {
         xAxis.setTextColor(Color.WHITE);
         xAxis.setDrawGridLines(true);
         xAxis.setDrawAxisLine(true);
+        xAxis.setEnabled(false);
 
         YAxis yAxisLeft = mChart.getAxisLeft();
         yAxisLeft.setValueFormatter(new YAxisValueFormatter());
         yAxisLeft.setTextColor(Color.WHITE);
-        yAxisLeft.setDrawGridLines(true);
-        yAxisLeft.setDrawAxisLine(true);
+        yAxisLeft.setDrawGridLines(false);
+        yAxisLeft.setDrawAxisLine(false);
     }
 
     private LineDataSet createSet() {
@@ -101,15 +99,30 @@ public class DetailScreenChart {
 
     class XAxisValueFormatter implements IAxisValueFormatter {
 
-        private String[] mValues;
+        private long referenceTimestamp;
+        private DateFormat mDataFormat;
+        private Date mDate;
 
-        public XAxisValueFormatter(String[] mValues) {
-            this.mValues = mValues;
+        public XAxisValueFormatter(long referenceTimestamp) {
+            this.referenceTimestamp = referenceTimestamp;
+            this.mDataFormat = new SimpleDateFormat("hh:mm:ss", Locale.getDefault());
+            this.mDate = new Date();
         }
 
         @Override
         public String getFormattedValue(float value, AxisBase axis) {
-            return mValues[(int) value];
+            long convertedTimestamp = (long) value;
+            long originalTimestamp = referenceTimestamp + convertedTimestamp;
+            return getHour(originalTimestamp);
+        }
+
+        private String getHour(long timestamp) {
+            try {
+                mDate.setTime(timestamp * 1000);
+                return mDataFormat.format(mDate);
+            } catch (Exception e) {
+                return "xx";
+            }
         }
     }
 
@@ -138,6 +151,44 @@ public class DetailScreenChart {
         @Override
         public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
             return mFormat.format(value);
+        }
+    }
+
+    class CustomMarkerView extends MarkerView {
+
+        private TextView mTextView;
+        private MPPointF mOffset;
+        private long referenceTimestamp;
+        private DateFormat mDataFormat;
+        private Date mDate;
+
+        public CustomMarkerView(Context context, int layoutResource, long referenceTimestamp) {
+            super(context, layoutResource);
+            mTextView = (TextView) findViewById(R.id.marker_content);
+            this.referenceTimestamp = referenceTimestamp;
+            this.mDataFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            this.mDate = new Date();
+        }
+
+        @Override
+        public void refreshContent(Entry e, Highlight highlight) {
+            long currentTimestamp = (int)e.getX() + referenceTimestamp;
+            mTextView.setText(e.getY() + "% at " + getTimedate(currentTimestamp));
+        }
+
+        @Override
+        public MPPointF getOffset() {
+            return new MPPointF(-getWidth() / 2, -getHeight());
+        }
+
+        private String getTimedate(long timestamp){
+            try{
+                mDate.setTime(timestamp * 1000);
+                return mDataFormat.format(mDate);
+            }
+            catch(Exception ex){
+                return "xx";
+            }
         }
     }
 }
