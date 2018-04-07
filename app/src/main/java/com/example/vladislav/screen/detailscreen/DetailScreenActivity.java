@@ -91,7 +91,7 @@ public class DetailScreenActivity extends AppCompatActivity implements CryptoRep
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        mChart = new DetailScreenChart((LineChart) findViewById(R.id.chart), currencyName);
+        mChart = new DetailScreenChart((LineChart) findViewById(R.id.chart), currencyName,this);
         mChart.initialize();
 
         fieldValues = getResources().getStringArray(R.array.details_fields);

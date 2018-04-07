@@ -3,6 +3,7 @@ package com.example.vladislav.screen.detailscreen;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.vladislav.menu.R;
@@ -15,30 +16,37 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.MPPointF;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 
-import java.text.DateFormat;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by vladislav on 24.03.2018.
  */
 
-public class DetailScreenChart extends AppCompatActivity {
+public class DetailScreenChart extends AppCompatActivity implements OnChartValueSelectedListener {
 
     private LineChart mChart;
     private String currencyName;
+    private Context mContext;
 
-    public DetailScreenChart(LineChart mChart, String currencyName) {
+    private ArrayList<String> xValues;
+    private SimpleDateFormat dateFormat;
+
+    public DetailScreenChart(LineChart mChart, String currencyName, Context context) {
         this.mChart = mChart;
         this.currencyName = currencyName;
+        this.mContext = context;
+        this.xValues = new ArrayList<>();
+        this.dateFormat = new SimpleDateFormat("HH:mm:ss");
     }
 
     public void initialize() {
@@ -52,6 +60,11 @@ public class DetailScreenChart extends AppCompatActivity {
         mChart.getLegend().setEnabled(false);
         mChart.getAxisRight().setEnabled(false);
         mChart.setData(new LineData());
+        mChart.setOnChartValueSelectedListener(this);
+
+        MyMarkerView mv = new MyMarkerView(mContext, R.layout.custom_marker_view);
+        mv.setChartView(mChart);
+        mChart.setMarker(mv);
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -65,6 +78,18 @@ public class DetailScreenChart extends AppCompatActivity {
         yAxisLeft.setTextColor(Color.WHITE);
         yAxisLeft.setDrawGridLines(false);
         yAxisLeft.setDrawAxisLine(false);
+    }
+
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+        Log.i("Entry selected", e.toString());
+        Log.i("LOWHIGH", "low: " + mChart.getLowestVisibleX() + ", high: " + mChart.getHighestVisibleX());
+        Log.i("MIN MAX", "xmin: " + mChart.getXChartMin() + ", xmax: " + mChart.getXChartMax() + ", ymin: " + mChart.getYChartMin() + ", ymax: " + mChart.getYChartMax());
+    }
+
+    @Override
+    public void onNothingSelected() {
+        Log.i("Nothing selected", "Nothing selected.");
     }
 
     private LineDataSet createSet() {
@@ -82,6 +107,9 @@ public class DetailScreenChart extends AppCompatActivity {
     }
 
     public void addEntry(float yValue) {
+        Date date = new Date(new Timestamp(Calendar.getInstance().getTimeInMillis()).getTime());
+        xValues.add(dateFormat.format(date));
+
         LineData data = mChart.getData();
 
         ILineDataSet set = data.getDataSetByIndex(0);
@@ -97,41 +125,12 @@ public class DetailScreenChart extends AppCompatActivity {
         mChart.moveViewToX(data.getEntryCount());
     }
 
-    class XAxisValueFormatter implements IAxisValueFormatter {
-
-        private long referenceTimestamp;
-        private DateFormat mDataFormat;
-        private Date mDate;
-
-        public XAxisValueFormatter(long referenceTimestamp) {
-            this.referenceTimestamp = referenceTimestamp;
-            this.mDataFormat = new SimpleDateFormat("hh:mm:ss", Locale.getDefault());
-            this.mDate = new Date();
-        }
-
-        @Override
-        public String getFormattedValue(float value, AxisBase axis) {
-            long convertedTimestamp = (long) value;
-            long originalTimestamp = referenceTimestamp + convertedTimestamp;
-            return getHour(originalTimestamp);
-        }
-
-        private String getHour(long timestamp) {
-            try {
-                mDate.setTime(timestamp * 1000);
-                return mDataFormat.format(mDate);
-            } catch (Exception e) {
-                return "xx";
-            }
-        }
-    }
-
     class YAxisValueFormatter implements IAxisValueFormatter {
 
         private DecimalFormat mFormat;
 
         public YAxisValueFormatter () {
-            mFormat = new DecimalFormat("###,###,##0.0");
+            this.mFormat = new DecimalFormat("###,###,##0.0");
         }
 
         @Override
@@ -140,55 +139,46 @@ public class DetailScreenChart extends AppCompatActivity {
         }
     }
 
-    class ValueFormatter implements IValueFormatter {
+    class MyMarkerView extends MarkerView {
 
+        private TextView tvContent;
         private DecimalFormat mFormat;
+        private String[] format = new String[] {
+                "0.000",
+                "0.0000",
+                "0.00000",
+                "0.000000"
+        };
 
-        public ValueFormatter() {
-            mFormat = new DecimalFormat("###,###,##0.000");
-        }
-
-        @Override
-        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-            return mFormat.format(value);
-        }
-    }
-
-    class CustomMarkerView extends MarkerView {
-
-        private TextView mTextView;
-        private MPPointF mOffset;
-        private long referenceTimestamp;
-        private DateFormat mDataFormat;
-        private Date mDate;
-
-        public CustomMarkerView(Context context, int layoutResource, long referenceTimestamp) {
+        public MyMarkerView(Context context, int layoutResource) {
             super(context, layoutResource);
-            mTextView = (TextView) findViewById(R.id.marker_content);
-            this.referenceTimestamp = referenceTimestamp;
-            this.mDataFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-            this.mDate = new Date();
+
+            tvContent = (TextView) findViewById(R.id.tvContent);
+            this.mFormat = new DecimalFormat(format[0]);
         }
 
         @Override
         public void refreshContent(Entry e, Highlight highlight) {
-            long currentTimestamp = (int)e.getX() + referenceTimestamp;
-            mTextView.setText(e.getY() + "% at " + getTimedate(currentTimestamp));
+            if (e.getY() < 100) {
+                this.mFormat = new DecimalFormat(format[1]);
+            }
+
+            if (e.getY() < 10) {
+                this.mFormat = new DecimalFormat(format[2]);
+            }
+
+            if (e.getY() < 1) {
+                this.mFormat = new DecimalFormat(format[3]);
+            }
+
+            tvContent.setText("$: " + mFormat.format(e.getY()) + ", время: " + xValues.get((int) e.getX()));
+
+            super.refreshContent(e, highlight);
         }
 
         @Override
         public MPPointF getOffset() {
-            return new MPPointF(-getWidth() / 2, -getHeight());
-        }
-
-        private String getTimedate(long timestamp){
-            try{
-                mDate.setTime(timestamp * 1000);
-                return mDataFormat.format(mDate);
-            }
-            catch(Exception ex){
-                return "xx";
-            }
+            return new MPPointF(-(getWidth() / 2), -getHeight());
         }
     }
 }
