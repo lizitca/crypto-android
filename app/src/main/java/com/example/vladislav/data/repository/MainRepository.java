@@ -274,6 +274,15 @@ public class MainRepository implements CryptoRepository {
         );
     }
 
+    @Override
+    public void updateNotificationSetting(final NotificationSetting setting) {
+        dbExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                db.settingDao().insertNotificationSetting(setting);
+            }
+        });
+    }
 
     ///////////////////////////////
     /// Using reactive behavior ///

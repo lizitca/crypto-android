@@ -59,6 +59,7 @@ public interface CryptoRepository {
         void notify(boolean successful);
     }
 
+    void updateNotificationSetting(NotificationSetting setting);
 
       ///////////////////////////////
      /// Using reactive behavior ///
