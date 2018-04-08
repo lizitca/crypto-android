@@ -8,6 +8,7 @@ import android.util.Log;
 import com.example.vladislav.app.Constant;
 import com.example.vladislav.data.CryptoDatabase;
 import com.example.vladislav.data.CurrencyData;
+import com.example.vladislav.data.NotificationSetting;
 import com.example.vladislav.data.api.CryptoCompareApi;
 import com.example.vladislav.data.api.models.CurrencyDataModel;
 
@@ -75,6 +76,7 @@ public class MainRepository implements CryptoRepository {
         FSYMS = fsymsBuilder.toString();
     }
 
+    @Deprecated
     @Override
     public void getCurrenciesDataList(GetDataListCallback callback) {
         if (currenciesMap.size() == 0) {
@@ -84,6 +86,7 @@ public class MainRepository implements CryptoRepository {
         }
     }
 
+    @Deprecated
     @Override
     public void updateCurrenciesData(final RefreshCallback callback) {
         api.getCurrencyData(FSYMS, USD).enqueue(new Callback<CurrencyDataModel.Response>() {
@@ -121,6 +124,7 @@ public class MainRepository implements CryptoRepository {
         });
     }
 
+    @Deprecated
     @Override
     public void getCurrencyData(@NonNull final String currencyName, @NonNull final GetDataCallback callback) {
         if (currenciesMap.containsKey(currencyName)) {
@@ -148,6 +152,7 @@ public class MainRepository implements CryptoRepository {
         });
     }
 
+    @Deprecated
     @Override
     public void updateCurrencyData(@NonNull final String currencyName, @NonNull final RefreshCallback callback) {
         api.getCurrencyData(currencyName, USD).enqueue(new Callback<CurrencyDataModel.Response>() {
@@ -171,6 +176,39 @@ public class MainRepository implements CryptoRepository {
             public void onFailure(Call<CurrencyDataModel.Response> call, Throwable t) {
                 callback.notify(false);
                 Log.d(Constant.TAG, "onFailure()");
+            }
+        });
+    }
+
+    @Override
+    public void getNotificationSettingsAll(@NonNull final DataCallback<List<NotificationSetting>> callback) {
+        dbExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final List<NotificationSetting> settings = db.settingDao().getSettingsAll();
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onData(settings);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void getNotificationSetting(@NonNull final String currencyName,
+                                       @NonNull final DataCallback<NotificationSetting> callback) {
+        dbExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final NotificationSetting setting = db.settingDao().getSetting(currencyName);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onData(setting);
+                    }
+                });
             }
         });
     }
@@ -236,6 +274,15 @@ public class MainRepository implements CryptoRepository {
         );
     }
 
+    @Override
+    public void updateNotificationSetting(final NotificationSetting setting) {
+        dbExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                db.settingDao().insertNotificationSetting(setting);
+            }
+        });
+    }
 
     ///////////////////////////////
     /// Using reactive behavior ///
@@ -297,5 +344,15 @@ public class MainRepository implements CryptoRepository {
                         db.currencyDataDao().insertCurrencyData(data);
                     }
                 });
+    }
+
+    @Override
+    public Flowable<List<NotificationSetting>> getNotificationSettingListFromDb_Rx() {
+        return db.settingDao().getSettingsAll_Rx();
+    }
+
+    @Override
+    public Flowable<NotificationSetting> getNotificationSettingFromDb_Rx(@NonNull String currencyName) {
+        return db.settingDao().getSetting_Rx(currencyName);
     }
 }
