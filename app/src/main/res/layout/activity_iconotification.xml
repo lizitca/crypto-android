@@ -181,6 +181,15 @@
                     android:textSize="18sp" />
             </LinearLayout>
 
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginTop="15dp"
+                android:background="@color/currency_item_title"
+                android:text="Сохранить"
+                android:textColor="@color/colorWhite" />
         </LinearLayout>
 
     </LinearLayout>

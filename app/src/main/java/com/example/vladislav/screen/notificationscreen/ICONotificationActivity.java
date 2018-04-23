@@ -1,11 +1,16 @@
 package com.example.vladislav.screen.notificationscreen;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.annotation.IdRes;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +49,57 @@ public class ICONotificationActivity extends AppCompatActivity {
         setTitle("Уведомление");
         customSeekBar(R.id.priceplus, R.id.seekBar1, R.id.minus1, R.id.plus1, 0);
         customSeekBar(R.id.priceminus, R.id.seekBar3, R.id.minus2, R.id.plus2, 100);
+
+
+        //disable buttons while checkbox1 is not checked
+        final Button mButton=(Button)findViewById( R.id.minus1);
+        final Button pButton=(Button)findViewById( R.id.plus1);
+        final SeekBar seekBar1=findViewById( R.id.seekBar1);
+        enableCustomControl(mButton,pButton,seekBar1,false);
+        CheckBox mCheckBox= ( CheckBox ) findViewById( R.id.pricehighter);
+        mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                enableCustomControl(mButton,pButton,seekBar1,isChecked);
+            }
+        });
+        //disable buttons while checkbox2 is not checked
+        final Button m1Button=(Button)findViewById( R.id.minus2);
+        final Button p1Button=(Button)findViewById( R.id.plus2);
+        final SeekBar seekBar2=findViewById( R.id.seekBar3);
+        enableCustomControl(m1Button,p1Button,seekBar2,false);
+        CheckBox CheckBox= ( CheckBox ) findViewById( R.id.checkBox2);
+        CheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                enableCustomControl(m1Button,p1Button,seekBar2,isChecked);
+
+            }
+        });
+    }
+
+    private  void  enableCustomControl( Button mbutton, Button pbutton, SeekBar seekBar, boolean isEnabled){
+
+        mbutton.setEnabled(isEnabled);
+        pbutton.setEnabled(isEnabled);
+        seekBar.setEnabled(isEnabled);
+
+        if(isEnabled)
+        {
+            mbutton.getBackground().setColorFilter(ResourcesCompat.getColor(getResources(),
+                    R.color.background_menu, null),
+                    PorterDuff.Mode.MULTIPLY);
+            pbutton.getBackground().setColorFilter(ResourcesCompat.getColor(getResources(),
+                    R.color.background_menu, null),
+                    PorterDuff.Mode.MULTIPLY);
+        }
+        else
+        {
+            mbutton.getBackground().setColorFilter(Color.DKGRAY, PorterDuff.Mode.MULTIPLY);
+            pbutton.getBackground().setColorFilter(Color.DKGRAY, PorterDuff.Mode.MULTIPLY);
+        }
 
     }
 
