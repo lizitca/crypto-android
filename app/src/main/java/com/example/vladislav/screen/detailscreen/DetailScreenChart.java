@@ -144,10 +144,10 @@ public class DetailScreenChart extends AppCompatActivity implements OnChartValue
         private TextView tvContent;
         private DecimalFormat mFormat;
         private String[] format = new String[] {
-                "0.000",
-                "0.0000",
-                "0.00000",
-                "0.000000"
+                "$0.00",
+                "$0.000",
+                "$0.0000",
+                "$0.00000"
         };
 
         public MyMarkerView(Context context, int layoutResource) {
@@ -171,7 +171,7 @@ public class DetailScreenChart extends AppCompatActivity implements OnChartValue
                 this.mFormat = new DecimalFormat(format[3]);
             }
 
-            tvContent.setText("$: " + mFormat.format(e.getY()) + ", время: " + xValues.get((int) e.getX()));
+            tvContent.setText(mFormat.format(e.getY()) + "\n⌛: " + xValues.get((int) e.getX()));
 
             super.refreshContent(e, highlight);
         }
